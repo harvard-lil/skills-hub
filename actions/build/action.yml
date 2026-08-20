@@ -50,12 +50,15 @@ runs:
       # cloning over the network: composite actions are fetched wholesale, so
       # this works even while skills-hub is a private repository.
       shell: bash
-      run: uv pip install "${{ github.action_path }}/../../packages/skills-hub-builder"
+      run: |
+        uv venv "${RUNNER_TEMP}/skills-hub-venv" --python ${{ inputs.python-version }}
+        uv pip install --python "${RUNNER_TEMP}/skills-hub-venv/bin/python" \
+          "${{ github.action_path }}/../../packages/skills-hub-builder"
 
     - name: Build site
       shell: bash
       run: |
-        uv run skills-hub-builder build \
+        "${RUNNER_TEMP}/skills-hub-venv/bin/skills-hub-builder" build \
           --base-url "${{ steps.urls.outputs.base_url }}" \
           --repo-url "${{ steps.urls.outputs.repo_url }}" \
           --custom-gpt-url "${{ inputs.custom-gpt-url }}"

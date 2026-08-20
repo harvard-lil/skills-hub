@@ -1,0 +1,587 @@
+/* Skills Hub — Default Theme */
+
+:root {
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'DM Mono', ui-monospace, monospace;
+    --color-bg: #fafafa;
+    --color-surface: #ffffff;
+    --color-text: #1a1a1a;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-accent: #7c3aed;
+    --container-max: 1100px;
+    --radius: 8px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header */
+.site-header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.site-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+.logo a {
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.logo .divider {
+    color: var(--color-text-muted);
+}
+
+.site-header nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.site-header nav a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.15s;
+}
+
+.site-header nav a:hover {
+    color: var(--color-text);
+}
+
+/* Hero */
+.hero {
+    padding: 4rem 0 3rem;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.hero-text {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-hover);
+}
+
+.btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--color-text-muted);
+}
+
+/* Section Headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.4rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-text-muted);
+    color: var(--color-text);
+}
+
+.filter-btn.active {
+    background: var(--color-text);
+    border-color: var(--color-text);
+    color: white;
+}
+
+/* Groups Section */
+.groups-section {
+    padding: 3rem 0;
+    flex: 1;
+}
+
+.group-section {
+    margin-bottom: 3rem;
+}
+
+/* Meta Callout */
+.meta-callout {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.meta-callout-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.meta-callout-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.meta-callout-heading h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.meta-desc {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+/* Skills Grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.skill-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s;
+}
+
+.skill-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.skill-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.skill-category {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 100px;
+    background: var(--color-accent);
+    color: white;
+}
+
+.skill-status-badge {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    padding: 0.15rem 0.4rem;
+    border-radius: 100px;
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.skill-status-official {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.skill-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.skill-desc {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.download-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.15s;
+}
+
+.download-btn:hover {
+    background: var(--color-primary-hover);
+}
+
+.card-links {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.card-links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+}
+
+.card-links a:hover {
+    color: var(--color-primary);
+}
+
+/* Footer */
+.site-footer {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.footer-left h3 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.footer-left p,
+.footer-right p {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+}
+
+.footer-right a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.footer-right a:hover {
+    color: var(--color-text);
+}
+
+/* Utilities */
+.loading-msg {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.no-results {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 3rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 1.8rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .meta-callout-body { flex-direction: column; align-items: flex-start; }
+}
+
+/* Install Page */
+.install-hero {
+    padding: 4rem 0 2rem;
+}
+
+.install-hero h1 {
+    font-size: 3rem;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+}
+
+.install-subtitle {
+    font-size: 1.15rem;
+    color: #444;
+    max-width: 600px;
+    line-height: 1.6;
+}
+
+.install-tier {
+    padding: 3rem 0;
+}
+
+.install-tier-alt {
+    background-color: #fafafa;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.install-tier-heading {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.install-tier-desc {
+    font-size: 1rem;
+    color: #444;
+    max-width: 600px;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.install-steps {
+    max-width: 600px;
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.install-steps li {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.install-steps li strong {
+    color: var(--text-color);
+}
+
+.install-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2rem;
+}
+
+.install-card {
+    border: var(--border-width) solid var(--text-color);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-color);
+}
+
+.install-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+}
+
+.install-card-header {
+    margin-bottom: 1rem;
+}
+
+.install-card-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    background-color: #FFF069;
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.install-card-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0;
+}
+
+.install-card-desc {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.install-card-features {
+    list-style: none;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.install-card-features li {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #555;
+    padding: 0.3rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+}
+
+.install-card-features li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: #333;
+}
+
+.install-card-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+}
+
+.install-dev-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.install-dev-option {
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+}
+
+.install-dev-option h3 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.install-dev-option p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.install-dev-link {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.install-dev-link:hover {
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .install-hero h1 {
+        font-size: 2rem;
+    }
+
+    .install-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .install-dev-options {
+        grid-template-columns: 1fr;
+    }
+}

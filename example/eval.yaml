@@ -1,0 +1,19 @@
+# Evaluation configuration for the Data Monitoring Toolkit.
+#
+# Set OPENROUTER_API_KEY in .env to run evaluations.
+
+models_under_test:
+  - id: default
+    model: anthropic/claude-sonnet-4.6
+    temperature: 0.3
+    max_tokens: 2048
+
+judge_models:
+  - id: default-judge
+    model: anthropic/claude-sonnet-4.6
+    temperature: 0.0
+    max_tokens: 512
+
+api:
+  base_url: https://openrouter.ai/api/v1
+  api_key_env: OPENROUTER_API_KEY

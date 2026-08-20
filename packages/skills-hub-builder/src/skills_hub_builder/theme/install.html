@@ -1,0 +1,147 @@
+{% extends "_base.html" %}
+
+{% block title %}Get Started — {{ site.title }}{% endblock %}
+{% block description %}How to install {{ site.title }} skills in your AI agent.{% endblock %}
+
+{% block content %}
+    <!-- Install Hero -->
+    <section class="install-hero">
+        <div class="container">
+            <h1>Get Started</h1>
+            <p class="install-subtitle">
+                Skills are plain instruction files that teach your AI agent how to do a task well.
+                Installing one takes a download and a drag &mdash; no programming required.
+            </p>
+        </div>
+    </section>
+
+    {% if custom_gpt_url or mcpb_download_url %}
+    <!-- One-click options -->
+    <section class="install-tier">
+        <div class="container">
+            <span class="install-card-badge">RECOMMENDED</span>
+            <div class="install-cards">
+
+                {% if custom_gpt_url %}
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <h2>ChatGPT</h2>
+                    </div>
+                    <p class="install-card-desc">
+                        Use our Custom GPT in ChatGPT. All skills stay up to date automatically &mdash;
+                        nothing to download or maintain.
+                    </p>
+                    <ul class="install-card-features">
+                        <li>Works with ChatGPT Plus, Team, or Enterprise</li>
+                        <li>Always has the latest skills</li>
+                        <li>No setup required</li>
+                    </ul>
+                    <a href="{{ custom_gpt_url }}" class="btn btn-primary install-card-btn" target="_blank">
+                        Open Custom GPT &rarr;
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if mcpb_download_url %}
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <h2>Claude Desktop</h2>
+                    </div>
+                    <p class="install-card-desc">
+                        Install a Desktop Extension for Claude. Runs locally &mdash;
+                        double-click to install, and you&rsquo;re ready.
+                    </p>
+                    <ul class="install-card-features">
+                        <li>Works with Claude Desktop (free or Pro)</li>
+                        <li>Lightweight local server</li>
+                        <li>One-click install</li>
+                    </ul>
+                    <a href="{{ mcpb_download_url }}" class="btn btn-primary install-card-btn" download>
+                        Download Extension (.mcpb)
+                    </a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Install a skill pack -->
+    <section class="install-tier install-tier-alt">
+        <div class="container">
+            <h2 class="install-tier-heading">Install a Skill Pack</h2>
+            <p class="install-tier-desc">
+                Each group on the <a href="{{ root or './' }}#groups">skills page</a> offers a
+                <strong>pack</strong> &mdash; one download that bundles the group&rsquo;s skills and
+                routes your requests to the right one automatically. Individual skills are available
+                the same way if you only want one.
+            </p>
+            <ol class="install-steps">
+                <li>
+                    <strong>Download</strong> the <code>.skill</code> file for the pack or skill you want.
+                </li>
+                <li>
+                    <strong>Add it to your agent.</strong> In Claude, open <em>Settings &rarr; Capabilities &rarr; Skills</em>
+                    and upload the file. In Claude Code, unzip it into your <code>.claude/skills/</code> folder.
+                    Other agents that support the open <a href="https://agentskills.io/" target="_blank">Agent Skills</a>
+                    standard have an equivalent place for skills &mdash; check your agent&rsquo;s documentation.
+                </li>
+                <li>
+                    <strong>Ask for the task in plain language.</strong> The skill activates on its own when
+                    your request matches what it does.
+                </li>
+            </ol>
+            <p class="install-tier-desc">
+                A <code>.skill</code> file is just a zip of readable instructions &mdash; you can open it
+                and read exactly what your agent will be told to do. If your agent has no skills support
+                at all, opening the zip and pasting <code>SKILL.md</code> into your chat works too.
+            </p>
+        </div>
+    </section>
+
+    <!-- For Developers -->
+    <section class="install-tier">
+        <div class="container">
+            <h2 class="install-tier-heading">For Developers</h2>
+            <p class="install-tier-desc">
+                Everything on this site is static and open. Point tools at the machine-readable
+                inventory, or fork the source to build your own hub.
+            </p>
+            <div class="install-dev-options">
+                <div class="install-dev-option">
+                    <h3>Use the JSON Inventory</h3>
+                    <p>
+                        Every group and skill is listed in static JSON, suitable for agent discovery
+                        and automation.
+                    </p>
+                    <a href="{{ root or './' }}inventory/groups.json" class="install-dev-link" target="_blank">
+                        View Inventory &rarr;
+                    </a>
+                </div>
+                {% if config.outputs.gpt_actions %}
+                <div class="install-dev-option">
+                    <h3>Use the API</h3>
+                    <p>
+                        An OpenAPI spec is available for tool-calling agents and Custom GPT actions.
+                    </p>
+                    <a href="{{ root or './' }}actions/openapi.yaml" class="install-dev-link" target="_blank">
+                        View OpenAPI Spec &rarr;
+                    </a>
+                </div>
+                {% endif %}
+                {% if repo_url %}
+                <div class="install-dev-option">
+                    <h3>Browse the Source</h3>
+                    <p>
+                        All skills and tests are on GitHub. Fork the repo to create your own hub.
+                    </p>
+                    <a href="{{ repo_url }}" class="install-dev-link" target="_blank">
+                        View on GitHub &rarr;
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

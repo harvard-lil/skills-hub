@@ -1,0 +1,72 @@
+# Reusable workflow: Build a skills hub site and deploy to GitHub Pages.
+#
+# Usage in a consumer repo:
+#
+#   jobs:
+#     build-and-deploy:
+#       uses: harvard-lil/skills-hub/.github/workflows/build-and-deploy.yml@main
+#       with:
+#         custom-gpt-url: ${{ vars.CUSTOM_GPT_URL }}
+
+name: Build and Deploy Skills Hub
+
+on:
+  workflow_call:
+    inputs:
+      base-url:
+        description: "Base URL (auto-derived from repo if empty)"
+        type: string
+        required: false
+        default: ""
+      repo-url:
+        description: "Source repo URL (auto-derived if empty)"
+        type: string
+        required: false
+        default: ""
+      custom-gpt-url:
+        description: "Custom GPT URL (optional)"
+        type: string
+        required: false
+        default: ""
+      python-version:
+        description: "Python version"
+        type: string
+        required: false
+        default: "3.12"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The composite action installs the builder from its own downloaded copy
+      # of skills-hub, so this works while skills-hub is a private repository
+      # (requires skills-hub's Actions access set to "organization").
+      - name: Build site
+        uses: harvard-lil/skills-hub/actions/build@main
+        with:
+          base-url: ${{ inputs.base-url }}
+          repo-url: ${{ inputs.repo-url }}
+          custom-gpt-url: ${{ inputs.custom-gpt-url }}
+          python-version: ${{ inputs.python-version }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

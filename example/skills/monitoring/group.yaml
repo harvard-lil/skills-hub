@@ -1,0 +1,10 @@
+label: Dataset Monitoring
+description: Tools for tracking changes in public datasets over time
+design:
+  objective: Detect and interpret changes to federal statistical datasets
+  principles:
+    - Use Binoc diffs as the primary data source when available
+    - Flag changes by severity and type
+    - Provide context for why a change matters
+  tone: Precise, informative
+accent_color: "#2563eb"

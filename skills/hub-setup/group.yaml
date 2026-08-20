@@ -1,0 +1,9 @@
+label: Hub Setup
+description: Skills for creating, configuring, and maintaining a skills hub site
+design:
+  objective: Help users set up and publish their own skills hub with minimal friction
+  principles:
+    - Favor convention over configuration — defaults should work out of the box
+    - Explain the why behind each file and structure
+    - Produce working results the user can immediately deploy
+  tone: Practical, collegial

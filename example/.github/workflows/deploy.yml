@@ -1,0 +1,18 @@
+# Deploy the Data Monitoring Toolkit to GitHub Pages.
+# This is the only workflow file a consumer project needs.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    uses: harvard-lil/skills-hub/.github/workflows/build-and-deploy.yml@main

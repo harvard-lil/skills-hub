@@ -1,0 +1,25 @@
+site:
+  title: Data Monitoring Toolkit
+  subtitle: Skills for dataset monitoring and public data risk analysis
+  org_name: Public Data Project
+  org_url: https://lil.law.harvard.edu/
+  org_parent: Harvard Law School Library Innovation Lab
+
+theme:
+  accent_colors:
+    risk-assessment: "#7c3aed"
+    monitoring: "#2563eb"
+  exclude: []
+
+outputs:
+  site: true
+  skill_packages: true
+  gpt_actions: false
+  claude_extension: false
+
+nav:
+  - label: Skills
+    href: "#groups"
+  - label: GitHub
+    href: "{{ repo_url }}"
+    external: true

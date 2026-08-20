@@ -1,0 +1,62 @@
+group: risk-assessment
+skill: analyzing-data-risk
+
+criteria:
+  structural:
+    - id: gathers-dataset-info
+      description: Agent asks about the dataset before proceeding with assessment
+      check: Agent asks at least one question about the dataset's identity, source, or characteristics before rating risk dimensions
+
+    - id: applies-rubric-dimensions
+      description: Agent evaluates using the risk rubric dimensions
+      check: Agent references specific risk dimensions (political salience, funding, staffing, methodology, dependencies, recency, replication) in its assessment
+
+    - id: produces-structured-output
+      description: Agent exports results in structured format
+      check: Agent produces a markdown table or offers JSON export with dimension ratings
+
+  qualitative:
+    - id: evidence-grounded
+      description: Agent cites specific evidence for each rating rather than making generic claims
+      weight: high
+
+    - id: acknowledges-uncertainty
+      description: Agent clearly states when it lacks information rather than fabricating
+      weight: high
+
+    - id: useful-synthesis
+      description: Overall risk summary identifies the most actionable concerns
+      weight: medium
+
+anti_patterns:
+  - id: invents-data
+    description: Agent fabricates dataset metadata not provided by the user
+    check: Agent makes specific claims about update frequency, funding amounts, or staffing numbers without user-provided evidence
+
+  - id: skips-gathering
+    description: Agent jumps to assessment without asking about the dataset
+    check: Agent produces risk ratings in its first response without asking any clarifying questions
+
+test_scenarios:
+  - id: census-acs
+    setup: Researcher evaluating risk to Census Bureau ACS data
+    messages:
+      - role: user
+        content: "I want to assess the risk to the American Community Survey dataset."
+      - role: user
+        content: "It's maintained by the Census Bureau, updated annually, and used in roughly $700 billion of federal funding allocation decisions. It's been the subject of political controversy around citizenship questions."
+    expected:
+      - Agent asks clarifying questions before or after receiving the information
+      - Applies risk rubric dimensions systematically
+      - Rates political salience and downstream dependencies as high risk
+      - Produces structured output
+
+  - id: minimal-info
+    setup: User provides very little information about a dataset
+    messages:
+      - role: user
+        content: "Can you assess the risk to a BLS dataset?"
+    expected:
+      - Agent asks which specific BLS dataset
+      - Does not proceed with full assessment on insufficient information
+      - Asks targeted follow-up questions

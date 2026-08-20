@@ -1,0 +1,26 @@
+[project]
+name = "skills-hub"
+version = "0.1.0"
+description = "Monorepo for skills-hub-builder and skill-eval"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+    "skills-hub-builder",
+    "skill-eval",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+skills-hub-builder = { workspace = true }
+skill-eval = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["packages/skills-hub-builder/tests", "packages/skill-eval/tests"]
+addopts = "--import-mode=importlib"

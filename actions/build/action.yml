@@ -1,0 +1,66 @@
+name: "Skills Hub — Build"
+description: "Build a skills hub static site and upload as a GitHub Pages artifact."
+
+inputs:
+  base-url:
+    description: "Base URL for the deployed site (auto-derived from repo if not set)"
+    required: false
+    default: ""
+  repo-url:
+    description: "Source repository URL (auto-derived if not set)"
+    required: false
+    default: ""
+  custom-gpt-url:
+    description: "Custom GPT URL (optional, for GPT Actions links)"
+    required: false
+    default: ""
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.12"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+
+    - name: Set up Python
+      shell: bash
+      run: uv python install ${{ inputs.python-version }}
+
+    - name: Derive URLs
+      id: urls
+      shell: bash
+      run: |
+        REPO_NAME="${GITHUB_REPOSITORY#*/}"
+        if [ -z "${{ inputs.base-url }}" ]; then
+          echo "base_url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/" >> "$GITHUB_OUTPUT"
+        else
+          echo "base_url=${{ inputs.base-url }}" >> "$GITHUB_OUTPUT"
+        fi
+        if [ -z "${{ inputs.repo-url }}" ]; then
+          echo "repo_url=https://github.com/${GITHUB_REPOSITORY}/" >> "$GITHUB_OUTPUT"
+        else
+          echo "repo_url=${{ inputs.repo-url }}" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Install skills-hub-builder
+      # Install from this action's own downloaded copy of the repo rather than
+      # cloning over the network: composite actions are fetched wholesale, so
+      # this works even while skills-hub is a private repository.
+      shell: bash
+      run: uv pip install "${{ github.action_path }}/../../packages/skills-hub-builder"
+
+    - name: Build site
+      shell: bash
+      run: |
+        uv run skills-hub-builder build \
+          --base-url "${{ steps.urls.outputs.base_url }}" \
+          --repo-url "${{ steps.urls.outputs.repo_url }}" \
+          --custom-gpt-url "${{ inputs.custom-gpt-url }}"
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site

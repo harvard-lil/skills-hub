@@ -1,0 +1,69 @@
+# Reusable workflow: Run skill evaluations and commit traces.
+#
+# Usage in a consumer repo:
+#
+#   jobs:
+#     evaluate:
+#       uses: harvard-lil/skills-hub/.github/workflows/eval.yml@main
+#       secrets:
+#         api-key: ${{ secrets.OPENROUTER_API_KEY }}
+
+name: Evaluate Skills
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: "Python version"
+        type: string
+        required: false
+        default: "3.12"
+      rerun:
+        description: "Re-run all scenarios"
+        type: boolean
+        required: false
+        default: false
+    secrets:
+      api-key:
+        description: "API key for the LLM provider (e.g. OpenRouter)"
+        required: true
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        run: uv python install ${{ inputs.python-version }}
+
+      - name: Install skill-eval
+        run: uv pip install "skill-eval @ git+https://github.com/harvard-lil/skills-hub#subdirectory=packages/skill-eval"
+
+      - name: Run evaluations
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.api-key }}
+        run: |
+          ARGS="-v -s"
+          if [ "${{ inputs.rerun }}" = "true" ]; then
+            ARGS="$ARGS --rerun"
+          fi
+          uv run pytest tests/ $ARGS || true
+
+      - name: Rebuild trace index
+        run: uv run skill-eval index
+
+      - name: Commit traces
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add traces/
+          if git diff --cached --quiet; then
+            echo "No new traces to commit."
+          else
+            git commit -m "eval: update traces [skip ci]"
+            git push
+          fi

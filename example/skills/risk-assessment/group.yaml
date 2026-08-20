@@ -1,0 +1,10 @@
+label: Data Risk Assessment
+description: Tools for evaluating risk to public datasets using established frameworks
+design:
+  objective: Help researchers assess and communicate data risk
+  principles:
+    - Use America's Data Index rubric as the evaluation framework
+    - Export results in machine-readable format
+    - Explain reasoning for each risk dimension
+  tone: Analytical, evidence-based
+accent_color: "#7c3aed"

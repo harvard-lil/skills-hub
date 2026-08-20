@@ -1,0 +1,23 @@
+site:
+  title: Skills Hub
+  subtitle: A toolkit for publishing and evaluating collections of AI agent skills
+  org_name: Library Innovation Lab
+  org_url: https://lil.law.harvard.edu/
+  org_parent: Harvard Law School
+
+theme:
+  accent_colors:
+    hub-setup: "#2563eb"
+
+outputs:
+  site: true
+  skill_packages: true
+  gpt_actions: false
+  claude_extension: false
+
+nav:
+  - label: Skills
+    href: "#groups"
+  - label: GitHub
+    href: "{{ repo_url }}"
+    external: true

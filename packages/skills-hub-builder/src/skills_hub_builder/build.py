@@ -11,12 +11,14 @@ from .discover import SkillNode, discover_tree
 from .gpt_actions import build_gpt_actions
 from .packager import (
     build_inventory,
+    load_meta_template,
     render_meta_skill_md,
     write_inventory,
     zip_meta_skill,
     zip_skill,
 )
-from .renderer import render_site
+from .renderer import build_template_env, render_site
+from .skill_pages import build_skill_pages
 
 
 def build(
@@ -67,6 +69,13 @@ def build(
             custom_gpt_url=custom_gpt_url,
             mcpb_download_url=mcpb_download_url(config, base_url),
         )
+        build_skill_pages(
+            tree,
+            config,
+            build_template_env(config),
+            base_url=base_url,
+            repo_url=repo_url,
+        )
 
     # Copy traces if they exist
     if config.traces_dir.is_dir():
@@ -99,10 +108,7 @@ def _package_skills(
     output_dir = config.output_dir
 
     # Optional wrapper the consumer composes every meta skill into.
-    meta_template_path = config.templates_dir / "meta-skill.md"
-    meta_template = (
-        meta_template_path.read_text(encoding="utf-8") if meta_template_path.is_file() else None
-    )
+    meta_template = load_meta_template(config)
 
     for group_node in tree.children:
         if not group_node.is_group:

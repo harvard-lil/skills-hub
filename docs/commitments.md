@@ -36,6 +36,16 @@ required step to a consumer's workflow breaks this.
 can serve. Nothing in the published artifact requires a server, a database, or a
 running process.
 
+**A skill states its own maturity and the site shows it.** `status: draft` means
+the content has not been reviewed or tested; `status: official` means it has.
+Drafts are published — the shape of a skill is worth reading before its content
+is finished — but the site renders them greyed and dashed, leads with reading
+rather than installing, and says so once at the top of any view that holds no
+official skill. `preview` is the former name for `draft` and is normalized to it
+on read, so a consumer that has not swept its frontmatter still builds. Any
+status the builder does not recognise is published as written and treated as a
+draft by the site.
+
 **The inventory JSON is a public interface.** `inventory/groups.json` and
 `inventory/<group>.json` are read by the site's own JavaScript and, by design, by
 agents fetching the hub directly. Changing their shape is a breaking change for
@@ -60,9 +70,13 @@ Checked 2026-08-20 against the working tree.
   child skill's own `references/` and `rubric.yaml` carried along beneath it.
   `{{ bundled_skills }}` was expanded to a name, version, status, description,
   and the `references/.../subskill.md` path.
-- The site renders one page. Group and skill cards are built in the browser by
-  `js/app.js` from the inventory JSON; the HTML ships a "Loading skills
-  inventory…" placeholder.
+- The site renders an index page plus one page per skill under
+  `skills/<group>/<name>.html`. Group and skill cards on the index are built in
+  the browser by `js/app.js` from the inventory JSON, which now carries a
+  `page_url` per skill; the HTML ships a "Loading skills inventory…"
+  placeholder. Skill pages are rendered at build time from `_skill.html`, and a
+  meta skill's page shows the composed body its `.skill` carries rather than the
+  template. Checked 2026-09-01.
 - This repository has no `.git` directory and no remote. Every file is dated
   2026-08-19 or later, and there is no commit history to consult for rationale.
 - The builder has now been pointed at `lawskills-hub`, whose site was previously

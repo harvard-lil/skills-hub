@@ -7,7 +7,14 @@ import re
 import zipfile
 from pathlib import Path
 
+from .config import HubConfig
 from .discover import SkillInfo, SkillNode
+
+
+def load_meta_template(config: HubConfig) -> str | None:
+    """Read the consumer's templates/meta-skill.md wrapper, if it has one."""
+    path = config.templates_dir / "meta-skill.md"
+    return path.read_text(encoding="utf-8") if path.is_file() else None
 
 
 def zip_skill(skill: SkillInfo, output_path: Path) -> None:
@@ -163,6 +170,7 @@ def build_inventory(tree: SkillNode, base_url: str, repo_url: str = "") -> dict:
                 "name": s.name,
                 "description": s.description,
                 "install_url": f"{base_url}skills/{group_id}/{s.name}.skill",
+                "page_url": f"{base_url}skills/{group_id}/{s.name}.html",
                 "version": s.version,
                 "status": s.status,
                 "source_path": f"skills/{group_id}/{s.name}",
@@ -174,6 +182,7 @@ def build_inventory(tree: SkillNode, base_url: str, repo_url: str = "") -> dict:
                 "name": meta.name,
                 "description": meta.description,
                 "install_url": f"{base_url}skills/{group_id}/{meta.name}.skill",
+                "page_url": f"{base_url}skills/{group_id}/{meta.name}.html",
                 "version": meta.version,
                 "status": meta.status,
                 "source_path": f"skills/{group_id}/{meta.name}",

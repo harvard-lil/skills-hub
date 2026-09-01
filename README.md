@@ -22,6 +22,10 @@ A static site generator for a directory of agent skills. Given a project with
   built `.mcpb` supplies them. A project `website/install.html` replaces it;
   `theme.exclude` can drop it
 - `skills/<group>/<name>.skill` — a zip per skill, and per meta skill
+- `skills/<group>/<name>.html` — a page per skill showing the SKILL.md a
+  visitor would install, so a card can be read before it is downloaded. A
+  `status: draft` skill is marked unreviewed here and on its card; `status:
+  official` is the reviewed state
 - `inventory/groups.json` and `inventory/<group>.json` — the data the page reads,
   and the same data an agent can read directly
 - `traces/` — copied from the project's `traces/` directory if present, except

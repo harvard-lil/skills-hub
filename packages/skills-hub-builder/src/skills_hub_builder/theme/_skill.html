@@ -1,0 +1,65 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ skill.title }} — {{ site.title }}{% endblock %}
+{% block description %}{{ skill.description }}{% endblock %}
+
+{% block content %}
+<article class="skill-page{% if skill.status != 'official' %} is-draft{% endif %}">
+    <div class="container">
+        <a class="back-link" href="{{ root }}index.html#groups">&larr; All skills</a>
+
+        <header class="skill-page-header">
+            <div class="skill-page-tags">
+                <span class="skill-category">{{ group.label }}</span>
+                {% if skill.status == 'official' %}
+                <span class="skill-status-badge skill-status-official">Official</span>
+                {% else %}
+                <span class="skill-status-badge skill-status-draft">Draft</span>
+                {% endif %}
+                <span class="skill-version">v{{ skill.version }}</span>
+            </div>
+            <h1>{{ skill.title }}</h1>
+            <p class="skill-page-desc">{{ skill.description }}</p>
+
+            {% if skill.status != 'official' %}
+            <p class="draft-notice">
+                <strong>This is a draft.</strong> Its structure is settled enough to
+                read, but the instructions have not been reviewed or tested. Use it to
+                see the shape of a skill, not as guidance to follow.
+            </p>
+            {% endif %}
+
+            <div class="skill-page-actions">
+                {# A draft is offered for reading; only a finished skill asks to be installed. #}
+                <a href="{{ skill.install_url }}" class="btn {% if skill.status == 'official' %}btn-primary{% else %}btn-outline-muted{% endif %}" download>
+                    Download {{ skill.install_filename }}
+                </a>
+                {% if skill.source_url %}
+                <a href="{{ skill.source_url }}" class="btn btn-secondary" target="_blank">Source &rarr;</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <div class="skill-body markdown-body">
+            {{ skill.body_html }}
+        </div>
+
+        {% if skill.files|length > 1 or skill.is_meta %}
+        <section class="skill-files">
+            <h2>In the package</h2>
+            <ul>
+                {% for file in skill.files %}
+                <li><code>{{ skill.name }}/{{ file }}</code></li>
+                {% endfor %}
+            </ul>
+            {% if skill.is_meta %}
+            <p class="skill-files-note">
+                Installing this pack also installs the group's other skills, bundled
+                under <code>references/</code>.
+            </p>
+            {% endif %}
+        </section>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

@@ -2,7 +2,7 @@
 name: creating-a-hub
 description: Walks the user through creating a new skills hub project from scratch — from repo setup through first deployment. Use when someone says "I want to publish a collection of skills" or "set up a new hub."
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Creating a Skills Hub

@@ -2,7 +2,7 @@
 name: hub-setup-meta
 description: Routes skills hub setup and maintenance tasks to the appropriate specialized skill. Install this pack to get all hub setup capabilities.
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Skills Hub Setup

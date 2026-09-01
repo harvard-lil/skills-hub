@@ -2,7 +2,7 @@
 name: analyzing-data-risk
 description: Evaluates anticipated risk to a user-identified dataset using America's Data Index risk evaluation rubric. Produces structured, machine-readable risk assessments.
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Analyzing Public Data Risk

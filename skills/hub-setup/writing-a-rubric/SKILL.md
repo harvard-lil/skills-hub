@@ -2,7 +2,7 @@
 name: writing-a-rubric
 description: Guides the user through creating a rubric.yaml evaluation file for testing whether a skill works well. Use when someone says "how do I test my skill," "write a rubric," or "set up evaluation."
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Writing a Rubric

@@ -2,7 +2,7 @@
 name: binoc-diffs
 description: Analyzes Binoc diff output to identify and interpret changes in monitored public datasets. Classifies changes by severity and provides contextual explanation.
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Analyzing Binoc Diffs

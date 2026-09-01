@@ -2,7 +2,7 @@
 name: writing-a-skill
 description: Guides the user through writing a well-structured SKILL.md file with effective frontmatter, clear instructions, and proper boundaries. Use when someone says "help me write a skill" or "how do I structure my skill."
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Writing a Skill
@@ -26,7 +26,7 @@ Every SKILL.md starts with YAML frontmatter:
 name: kebab-case-name
 description: One sentence that tells an agent WHEN to use this skill. Write it as a trigger — the agent reads this to decide if this skill matches the user's request.
 version: 0.1.0
-status: preview
+status: draft
 ---
 ```
 
@@ -34,7 +34,11 @@ Key guidance:
 - **name**: kebab-case, matches the directory name
 - **description**: This is the routing signal. Write it from the agent's perspective: "Use when the user says X, Y, or Z." Include trigger phrases.
 - **version**: Semver. Bump when behavior changes.
-- **status**: `preview` (experimental) or `official` (stable, tested)
+- **status**: `draft` or `official`. A draft is published for its shape — the
+  site marks it as unreviewed, de-emphasizes its card, and leads with reading it
+  rather than installing it. Promote to `official` once the content has been
+  reviewed and tested. (`preview` is the old name for `draft` and is still read
+  as one.)
 
 ## Step 3: Structure the Body
 

@@ -16,6 +16,26 @@ from typing import Any
 
 import yaml
 
+#: Maturity of a skill's content. `draft` means the shape is real but the
+#: content has not been reviewed; `official` means it has. `preview` was the
+#: original name for `draft` and is still accepted in frontmatter.
+STATUS_DRAFT = "draft"
+STATUS_OFFICIAL = "official"
+STATUS_ALIASES = {"preview": STATUS_DRAFT}
+
+
+def normalize_status(value: str) -> str:
+    """Map a frontmatter status onto the current vocabulary.
+
+    Unknown values pass through unchanged: the builder publishes what a
+    SKILL.md says rather than judging it, and the site renders any status it
+    does not recognise with the draft treatment.
+    """
+    v = (value or "").strip().lower()
+    if not v:
+        return STATUS_DRAFT
+    return STATUS_ALIASES.get(v, v)
+
 
 @dataclass
 class SkillInfo:
@@ -24,7 +44,7 @@ class SkillInfo:
     name: str
     description: str
     version: str = "0.0.0"
-    status: str = "preview"
+    status: str = STATUS_DRAFT
     dir: Path = field(default_factory=lambda: Path("."))
     frontmatter: dict[str, str] = field(default_factory=dict)
 
@@ -163,7 +183,7 @@ def _discover_node(path: Path, node_id: str) -> SkillNode:
             name=fm.get("name", node_id),
             description=fm.get("description", ""),
             version=fm.get("version", "0.0.0"),
-            status=fm.get("status", "preview"),
+            status=normalize_status(fm.get("status", "")),
             dir=path,
             frontmatter=fm,
         )

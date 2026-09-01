@@ -406,8 +406,8 @@ def build_openapi_spec(
                                     "version": {"type": "string"},
                                     "status": {
                                         "type": "string",
-                                        "enum": ["preview", "official"],
-                                        "description": "Release status of the skill",
+                                        "enum": ["draft", "official"],
+                                        "description": "Content maturity: draft (not reviewed) or official (reviewed)",
                                     },
                                     "has_references": {"type": "boolean"},
                                     "reference_count": {"type": "integer"},
@@ -425,8 +425,8 @@ def build_openapi_spec(
                         "version": {"type": "string"},
                         "status": {
                             "type": "string",
-                            "enum": ["preview", "official"],
-                            "description": "Release status of the skill",
+                            "enum": ["draft", "official"],
+                            "description": "Content maturity: draft (not reviewed) or official (reviewed)",
                         },
                         "persona": {"type": "string"},
                         "skill_body": {

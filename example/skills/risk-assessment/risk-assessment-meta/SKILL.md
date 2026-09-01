@@ -2,7 +2,7 @@
 name: risk-assessment-meta
 description: Routes data risk assessment tasks to specialized tools. Install this pack to get all risk assessment capabilities with automatic routing.
 version: 0.1.0
-status: preview
+status: draft
 ---
 
 # Data Risk Assessment Toolkit

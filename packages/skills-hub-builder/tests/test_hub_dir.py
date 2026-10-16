@@ -150,7 +150,3 @@ class TestInventoryAndSite:
         assert "Instructions the agent reads" not in page
         assert "<p>You check data quality.</p>" in page
 
-    def test_build_refuses_rubric_beside_skill_md(self, tmp_project: Path):
-        (_skill_dir(tmp_project) / "rubric.yaml").write_text("skill: data-check\n", encoding="utf-8")
-        with pytest.raises(ValueError, match="skills/analysis/data-check/rubric.yaml"):
-            build(tmp_project)

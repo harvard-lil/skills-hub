@@ -17,7 +17,7 @@ skill-eval run --project /path/to/your/project
 
 ## Rubric Format
 
-Place a rubric at `<skill>/_hub/rubric.yaml`, beside the skill's `SKILL.md`, to define evaluation criteria. The hub builder does not package `_hub/`, so the rubric never ships with the skill. A `rubric.yaml` anywhere else, including directly beside `SKILL.md`, stops discovery with an error.
+Place a rubric at `<skill>/_hub/rubric.yaml`, beside the skill's `SKILL.md`, to define evaluation criteria. The hub builder does not package `_hub/`, so the rubric never ships with the skill. A `rubric.yaml` anywhere else is not read as a rubric.
 
 ```yaml
 group: my-group

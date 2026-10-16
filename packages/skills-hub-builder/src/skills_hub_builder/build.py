@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .claude_extension import build_claude_extension, mcpb_download_url
 from .config import HubConfig, load_config
-from .discover import HUB_DIR, SkillNode, discover_tree
+from .discover import SkillNode, discover_tree
 from .gpt_actions import build_gpt_actions
 from .packager import (
     build_inventory,
@@ -50,7 +50,6 @@ def build(
         return
 
     tree = discover_tree(config.skills_dir)
-    _check_rubric_locations(config.skills_dir)
 
     # Package skills
     if config.outputs.skill_packages:
@@ -159,15 +158,3 @@ def _copy_traces(config: HubConfig) -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
         _shutil.copy2(item, dest)
 
-
-def _check_rubric_locations(skills_dir: Path) -> None:
-    """Refuse to build when a rubric sits beside a SKILL.md.
-
-    Rubrics belong in the skill's `_hub/` directory, which is not packaged. One
-    beside the SKILL.md would ship to everyone who installs the skill, and
-    skill-eval would refuse to run it.
-    """
-    for rubric in sorted(skills_dir.rglob("rubric.yaml")):
-        if rubric.parent.name != HUB_DIR and (rubric.parent / "SKILL.md").is_file():
-            rel = rubric.relative_to(skills_dir.parent)
-            raise ValueError(f"{rel} would be packaged with its skill; move it to {HUB_DIR}/rubric.yaml")

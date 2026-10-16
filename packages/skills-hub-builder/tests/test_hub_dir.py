@@ -150,16 +150,3 @@ class TestInventoryAndSite:
         assert "Instructions the agent reads" not in page
         assert "<p>You check data quality.</p>" in page
 
-    def test_build_warns_about_rubric_beside_skill_md(
-        self, tmp_project: Path, capsys: pytest.CaptureFixture[str]
-    ):
-        (_skill_dir(tmp_project) / "rubric.yaml").write_text("skill: data-check\n", encoding="utf-8")
-        build(tmp_project)
-        out = capsys.readouterr().out
-        assert "warning: skills/analysis/data-check/rubric.yaml is packaged" in out
-
-    def test_build_does_not_warn_about_hub_rubric(
-        self, hub_project: Path, capsys: pytest.CaptureFixture[str]
-    ):
-        build(hub_project)
-        assert "warning:" not in capsys.readouterr().out

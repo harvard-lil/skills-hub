@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .claude_extension import build_claude_extension, mcpb_download_url
 from .config import HubConfig, load_config
-from .discover import HUB_DIR, SkillNode, discover_tree
+from .discover import SkillNode, discover_tree
 from .gpt_actions import build_gpt_actions
 from .packager import (
     build_inventory,
@@ -50,7 +50,6 @@ def build(
         return
 
     tree = discover_tree(config.skills_dir)
-    _warn_unmoved_rubrics(config.skills_dir)
 
     # Package skills
     if config.outputs.skill_packages:
@@ -159,15 +158,3 @@ def _copy_traces(config: HubConfig) -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
         _shutil.copy2(item, dest)
 
-
-def _warn_unmoved_rubrics(skills_dir: Path) -> None:
-    """Name rubrics still beside a SKILL.md, which ship inside its package.
-
-    Rubrics belong in the skill's `_hub/` directory, which is not packaged.
-    The old location still builds so that a consumer can move its rubrics in
-    its own time; until it does, they ride along to everyone who installs.
-    """
-    for rubric in sorted(skills_dir.rglob("rubric.yaml")):
-        if rubric.parent.name != HUB_DIR and (rubric.parent / "SKILL.md").is_file():
-            rel = rubric.relative_to(skills_dir.parent)
-            print(f"warning: {rel} is packaged with its skill; move it to {HUB_DIR}/rubric.yaml")

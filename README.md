@@ -23,7 +23,7 @@ start. A hub repository contains:
 | `skills/<group>/<skill>/SKILL.md` | everything | YAML frontmatter plus the instructions the agent follows |
 | `skills/<group>/<skill>/README.md` | guide | How to use the skill, written for the person installing it. Packaged, and shown above the instructions on the skill's page |
 | `skills/<group>/<skill>/_hub/metadata.yaml` | card text | `summary`: one sentence for people browsing the site. Cards fall back to the agent-facing `description` without it |
-| `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. A `rubric.yaml` beside `SKILL.md` still evaluates, but it is packaged and the build warns |
+| `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. Only this location is read as a rubric |
 | `templates/meta-skill.md` | meta skill bodies | A wrapper every meta skill is composed into. Without it, a meta `SKILL.md` keeps its own body and its `{{ bundled_skills }}` placeholder is expanded in place |
 | `templates/mcpb/` | `outputs.claude_extension` | The extension's own files, with `manifest.json` at the root |
 | `eval.yaml` | evaluation | Models under test, judge models, API base URL |

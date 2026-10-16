@@ -1,15 +1,10 @@
-"""Tests for pairing rubric.yaml files with the SKILL.md they evaluate."""
+"""Tests for finding each skill's rubric in its `_hub/` directory."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-from skill_eval.conftest_plugin import (
-    RubricWithoutSkillError,
-    discover_rubrics,
-    skill_md_for_rubric,
-)
+from skill_eval.conftest_plugin import discover_rubrics
 
 SKILL_MD = "---\nname: {name}\ndescription: test\nversion: 1.2.3\n---\n\n# Test\n"
 
@@ -27,47 +22,43 @@ def _rubric(path: Path, skill: str) -> Path:
     return path
 
 
-def test_rubric_in_hub_dir_pairs_with_skill_md(tmp_path: Path):
-    skill_dir = _skill(tmp_path, "grp", "alpha")
-    rubric = _rubric(skill_dir / "_hub" / "rubric.yaml", "alpha")
-    assert skill_md_for_rubric(rubric) == skill_dir / "SKILL.md"
-
-
-def test_rubric_beside_skill_md_still_pairs(tmp_path: Path):
-    skill_dir = _skill(tmp_path, "grp", "alpha")
-    rubric = _rubric(skill_dir / "rubric.yaml", "alpha")
-    assert skill_md_for_rubric(rubric) == skill_dir / "SKILL.md"
-
-
-def test_orphan_rubric_raises(tmp_path: Path):
-    rubric = _rubric(tmp_path / "grp" / "alpha" / "rubric.yaml", "alpha")
-    with pytest.raises(RubricWithoutSkillError, match="_hub/rubric.yaml"):
-        skill_md_for_rubric(rubric)
-
-
-def test_rubric_nested_below_hub_dir_raises(tmp_path: Path):
-    skill_dir = _skill(tmp_path, "grp", "alpha")
-    rubric = _rubric(skill_dir / "_hub" / "evals" / "rubric.yaml", "alpha")
-    with pytest.raises(RubricWithoutSkillError):
-        skill_md_for_rubric(rubric)
-
-
-def test_discover_rubrics_reads_both_layouts(tmp_path: Path):
+def test_rubric_in_hub_dir_is_paired_with_skill_md(tmp_path: Path):
     alpha = _skill(tmp_path, "grp", "alpha")
-    beta = _skill(tmp_path, "grp", "beta")
-    _rubric(alpha / "_hub" / "rubric.yaml", "alpha")
-    _rubric(beta / "rubric.yaml", "beta")
+    rubric = _rubric(alpha / "_hub" / "rubric.yaml", "alpha")
 
-    rubrics = {r["skill"]: r for r in discover_rubrics(tmp_path)}
-    assert set(rubrics) == {"alpha", "beta"}
-    assert rubrics["alpha"]["_skill_path"] == alpha / "SKILL.md"
-    assert rubrics["alpha"]["_group"] == "grp"
-    assert rubrics["alpha"]["_version"] == "1.2.3"
+    [found] = discover_rubrics(tmp_path)
+    assert found["_rubric_path"] == rubric
+    assert found["_skill_path"] == alpha / "SKILL.md"
+    assert found["_group"] == "grp"
+    assert found["_version"] == "1.2.3"
 
 
-def test_discover_rubrics_stops_on_orphan(tmp_path: Path):
+def test_skill_without_rubric_is_skipped(tmp_path: Path):
+    _skill(tmp_path, "grp", "alpha")
+    assert discover_rubrics(tmp_path) == []
+
+
+def test_rubric_yaml_outside_hub_dir_is_not_read(tmp_path: Path):
+    """`rubric.yaml` is an ordinary filename anywhere but `_hub/`."""
+    alpha = _skill(tmp_path, "grp", "alpha")
+    _rubric(alpha / "rubric.yaml", "alpha")
+    _rubric(alpha / "references" / "rubric.yaml", "alpha")
+    _rubric(tmp_path / "grp" / "no-skill" / "_hub" / "rubric.yaml", "no-skill")
+    assert discover_rubrics(tmp_path) == []
+
+
+def test_skill_md_under_hub_dir_is_not_a_skill(tmp_path: Path):
     alpha = _skill(tmp_path, "grp", "alpha")
     _rubric(alpha / "_hub" / "rubric.yaml", "alpha")
-    _rubric(tmp_path / "grp" / "stray" / "rubric.yaml", "stray")
-    with pytest.raises(RubricWithoutSkillError):
-        discover_rubrics(tmp_path)
+    nested = alpha / "_hub" / "fixture"
+    nested.mkdir()
+    (nested / "SKILL.md").write_text(SKILL_MD.format(name="fixture"), encoding="utf-8")
+    _rubric(nested / "_hub" / "rubric.yaml", "fixture")
+
+    assert [r["skill"] for r in discover_rubrics(tmp_path)] == ["alpha"]
+
+
+def test_every_skill_with_a_rubric_is_found(tmp_path: Path):
+    for name in ("alpha", "beta"):
+        _rubric(_skill(tmp_path, "grp", name) / "_hub" / "rubric.yaml", name)
+    assert [r["skill"] for r in discover_rubrics(tmp_path)] == ["alpha", "beta"]

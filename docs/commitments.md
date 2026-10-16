@@ -49,7 +49,7 @@ draft by the site.
 **A skill's `_hub/` never ships.** Everything in a skill directory is packaged
 except its root `_hub/`, which holds files only the hub reads:
 `_hub/metadata.yaml` (`summary`, the sentence a person reads on the card) and
-`_hub/rubric.yaml`. `README.md` is the guide for the person using the skill; it
+`_hub/rubric.yaml`. Elsewhere, `rubric.yaml` is an ordinary file. `README.md` is the guide for the person using the skill; it
 ships and leads the skill's page. The `SKILL.md` `description` stays written for
 an agent. See
 [adr/2026-10-16-hub-directory-and-user-guide.md](adr/2026-10-16-hub-directory-and-user-guide.md).

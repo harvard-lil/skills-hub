@@ -24,16 +24,18 @@ consumer repository that owns that domain.
 ## Verification
 
 ```bash
-just test            # 133 tests, no network
+just test            # unit tests, no network
 just lint
 just build-example   # writes example/_site
 just build-self      # writes _site
 just clean
 ```
 
-`just test` runs 133 tests. It establishes that the builder and harness behave as
-their unit tests specify. It establishes nothing about how a rendered page looks, whether a
-deployment succeeded, or whether any skill is any good. Check rendered output by
+CI (`.github/workflows/ci.yml`) runs `just lint`, `just test`,
+`just build-example` and `just build-self` on every pull request. `just test`
+establishes that the builder and harness behave as their unit tests specify. It
+establishes nothing about how a rendered page looks, whether a deployment
+succeeded, or whether any skill is any good. Check rendered output by
 reading `_site/index.html` and `_site/inventory/*.json`, or by serving the
 directory locally.
 
@@ -65,7 +67,8 @@ evidence.
   `pubdata-skills` are separate repositories with their own owners.
 - Changing `.github/workflows/build-and-deploy.yml` or `actions/` changes the
   behavior of every consumer pinned to `@main` on their next push. Treat those
-  files as published interface.
+  files as published interface. Dependabot pull requests that bump actions in
+  them are such changes, and CI here does not exercise a deploy.
 - Bump the package version in `packages/*/pyproject.toml` when behavior visible
   to a consumer changes. Consumers install from `@main`, so there is no release
   to hide behind.

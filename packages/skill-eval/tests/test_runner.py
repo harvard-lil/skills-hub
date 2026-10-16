@@ -1,12 +1,8 @@
 """Tests for the conversation scenario runner."""
 
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from skill_eval.runner import (
-    ConversationTrace,
-    Message,
-    ModelConfig,
     load_skill_as_system_prompt,
     run_scenario,
 )

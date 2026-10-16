@@ -1,8 +1,8 @@
 """Tests for skill packaging and inventory generation."""
 
-from pathlib import Path
 import json
 import zipfile
+from pathlib import Path
 
 from skills_hub_builder.discover import discover_tree
 from skills_hub_builder.packager import (
@@ -11,8 +11,8 @@ from skills_hub_builder.packager import (
     parse_meta_sections,
     render_meta_skill_md,
     write_inventory,
-    zip_skill,
     zip_meta_skill,
+    zip_skill,
 )
 
 META_TEMPLATE = """{{frontmatter}}

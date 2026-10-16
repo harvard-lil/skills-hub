@@ -264,7 +264,6 @@ def _has_skill_content(path: Path) -> bool:
     if (path / "SKILL.md").exists() or (path / "group.yaml").exists():
         return True
     for child in path.iterdir():
-        if child.is_dir() and not child.name.startswith("."):
-            if _has_skill_content(child):
-                return True
+        if child.is_dir() and not child.name.startswith(".") and _has_skill_content(child):
+            return True
     return False

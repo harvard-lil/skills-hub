@@ -75,7 +75,7 @@ def _run_and_evaluate(
         )
 
         assert not report.has_anti_pattern_violations(), (
-            f"Anti-pattern violations detected:\n"
+            "Anti-pattern violations detected:\n"
             + "\n".join(
                 f"  {c.criterion_id}: {c.justification}"
                 for c in report.anti_patterns

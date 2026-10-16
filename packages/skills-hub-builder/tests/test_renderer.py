@@ -4,7 +4,10 @@ from pathlib import Path
 
 from skills_hub_builder.config import load_config
 from skills_hub_builder.discover import discover_tree
-from skills_hub_builder.renderer import render_site, _discover_templates, build_template_env
+from skills_hub_builder.renderer import (
+    _discover_templates,
+    render_site,
+)
 
 
 def test_render_site_produces_index(tmp_project: Path):

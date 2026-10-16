@@ -15,6 +15,7 @@ import logging
 import os
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 import yaml
@@ -22,6 +23,9 @@ from dotenv import load_dotenv
 
 from .runner import ModelConfig, load_skill_as_system_prompt
 from .trace_writer import rebuild_index
+
+if TYPE_CHECKING:
+    from openai import OpenAI
 
 # The project root is discovered by walking up from CWD looking for hub.yaml or skills/
 _PROJECT_ROOT: Path | None = None
@@ -152,7 +156,7 @@ def eval_config() -> dict:
 
 
 @pytest.fixture(scope="session")
-def openai_client(eval_config) -> "OpenAI":
+def openai_client(eval_config) -> OpenAI:
     from openai import OpenAI
 
     project_root = _get_project_root()

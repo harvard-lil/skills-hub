@@ -61,12 +61,12 @@ def test_save_trace_increments_sequence(tmp_path: Path):
     trace, report = _make_trace_and_report()
     model = ModelConfig(id="test", model="test-model")
     judge = ModelConfig(id="judge", model="judge-model")
-    kwargs = dict(
-        group="g", version="1.0.0",
-        scenario={"id": "scenario-1", "messages": []},
-        model_config=model, judge_config=judge,
-        traces_dir=tmp_path,
-    )
+    kwargs = {
+        "group": "g", "version": "1.0.0",
+        "scenario": {"id": "scenario-1", "messages": []},
+        "model_config": model, "judge_config": judge,
+        "traces_dir": tmp_path,
+    }
 
     p1 = save_trace(trace, report, **kwargs)
     p2 = save_trace(trace, report, **kwargs)

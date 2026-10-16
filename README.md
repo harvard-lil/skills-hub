@@ -57,6 +57,9 @@ It writes `_site/`:
   has one, then the `SKILL.md` it would install. Skills with `status: draft` are
   marked as unreviewed here and on their cards; `status: official` is the
   reviewed state.
+  A hub's `website/_skill_note.html`, if present, is rendered on every skill
+  page under the guide, for example to link a page of general advice; the
+  bundled one is empty.
 - `inventory/groups.json`, `inventory/<group>.json`: the data the index page
   reads, published for agents to read too.
 - `install.html`: a generic page on installing a `.skill` in an agent. It shows
@@ -101,7 +104,7 @@ actions/                       composite actions (build, eval)
 skills/hub-setup/              this repository's own skills, for setting up a hub
 hub.yaml                       builds those skills as a hub
 example/                       minimal example hub
-docs/                          commitments, decisions, roadmap, research
+docs/                          commitments, decisions, roadmap, research, guides
 ```
 
 This repository builds its own `skills/hub-setup/` as a hub. A change that
@@ -134,3 +137,4 @@ call a model.
 - [docs/adr/](docs/adr/): why the structure is what it is
 - [docs/roadmap.md](docs/roadmap.md): what is next and what is unresolved
 - [docs/research/](docs/research/): checked evidence, with dates
+- [docs/guides/](docs/guides/): writing skills and their metadata, and running user tests

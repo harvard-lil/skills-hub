@@ -101,6 +101,27 @@ class TestSkillPages:
         )
         assert 'href="../../index.html#groups"' in page
 
+    def test_skill_note_is_empty_by_default(self, tmp_project: Path):
+        build(tmp_project)
+        page = (tmp_project / "_site" / "skills" / "monitoring" / "watch-feeds.html").read_text(
+            encoding="utf-8"
+        )
+        assert "A note shown on every skill page" not in page
+
+    def test_hub_skill_note_appears_on_every_page(self, tmp_project: Path):
+        website = tmp_project / "website"
+        website.mkdir()
+        (website / "_skill_note.html").write_text(
+            '<p class="hub-note"><a href="{{ root }}using-skills.html">Tips</a> for {{ skill.name }}</p>\n',
+            encoding="utf-8",
+        )
+        build(tmp_project)
+        skills = tmp_project / "_site" / "skills"
+        for page in [skills / "monitoring" / "watch-feeds.html", skills / "analysis" / "analysis-meta.html"]:
+            html = page.read_text(encoding="utf-8")
+            assert 'href="../../using-skills.html"' in html
+            assert f"for {page.stem}</p>" in html
+
     def test_inventory_links_to_the_page(self, tmp_project: Path):
         build(tmp_project)
         inv = json.loads(

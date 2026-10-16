@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 from skill_eval.conftest_plugin import (
-    RubricWithoutSkillError,
+    MisplacedRubricError,
     discover_rubrics,
     skill_md_for_rubric,
 )
@@ -33,30 +33,31 @@ def test_rubric_in_hub_dir_pairs_with_skill_md(tmp_path: Path):
     assert skill_md_for_rubric(rubric) == skill_dir / "SKILL.md"
 
 
-def test_rubric_beside_skill_md_still_pairs(tmp_path: Path):
+def test_rubric_beside_skill_md_raises(tmp_path: Path):
     skill_dir = _skill(tmp_path, "grp", "alpha")
     rubric = _rubric(skill_dir / "rubric.yaml", "alpha")
-    assert skill_md_for_rubric(rubric) == skill_dir / "SKILL.md"
+    with pytest.raises(MisplacedRubricError, match="_hub/rubric.yaml"):
+        skill_md_for_rubric(rubric)
 
 
 def test_orphan_rubric_raises(tmp_path: Path):
     rubric = _rubric(tmp_path / "grp" / "alpha" / "rubric.yaml", "alpha")
-    with pytest.raises(RubricWithoutSkillError, match="_hub/rubric.yaml"):
+    with pytest.raises(MisplacedRubricError, match="_hub/rubric.yaml"):
         skill_md_for_rubric(rubric)
 
 
 def test_rubric_nested_below_hub_dir_raises(tmp_path: Path):
     skill_dir = _skill(tmp_path, "grp", "alpha")
     rubric = _rubric(skill_dir / "_hub" / "evals" / "rubric.yaml", "alpha")
-    with pytest.raises(RubricWithoutSkillError):
+    with pytest.raises(MisplacedRubricError):
         skill_md_for_rubric(rubric)
 
 
-def test_discover_rubrics_reads_both_layouts(tmp_path: Path):
+def test_discover_rubrics(tmp_path: Path):
     alpha = _skill(tmp_path, "grp", "alpha")
     beta = _skill(tmp_path, "grp", "beta")
     _rubric(alpha / "_hub" / "rubric.yaml", "alpha")
-    _rubric(beta / "rubric.yaml", "beta")
+    _rubric(beta / "_hub" / "rubric.yaml", "beta")
 
     rubrics = {r["skill"]: r for r in discover_rubrics(tmp_path)}
     assert set(rubrics) == {"alpha", "beta"}
@@ -69,5 +70,5 @@ def test_discover_rubrics_stops_on_orphan(tmp_path: Path):
     alpha = _skill(tmp_path, "grp", "alpha")
     _rubric(alpha / "_hub" / "rubric.yaml", "alpha")
     _rubric(tmp_path / "grp" / "stray" / "rubric.yaml", "stray")
-    with pytest.raises(RubricWithoutSkillError):
+    with pytest.raises(MisplacedRubricError):
         discover_rubrics(tmp_path)

@@ -1,7 +1,7 @@
 """Pytest plugin for skill evaluation.
 
 Automatically discovers rubric.yaml files in a skills/ directory
-(at `<skill>/_hub/rubric.yaml`, or beside the SKILL.md in older projects),
+(at `<skill>/_hub/rubric.yaml`),
 provides fixtures for OpenAI clients and model configs, and
 parametrizes tests over discovered scenarios.
 
@@ -100,23 +100,20 @@ def _infer_group(skill_path: Path, skills_dir: Path) -> str:
 HUB_DIR = "_hub"
 
 
-class RubricWithoutSkillError(Exception):
-    """A rubric.yaml was found where no SKILL.md can be paired with it."""
+class MisplacedRubricError(Exception):
+    """A rubric.yaml was found somewhere other than `<skill>/_hub/rubric.yaml`."""
 
 
 def skill_md_for_rubric(rubric_path: Path) -> Path:
     """Return the SKILL.md a rubric evaluates.
 
-    A rubric at `<skill>/_hub/rubric.yaml` evaluates `<skill>/SKILL.md`. A
-    rubric directly beside a SKILL.md, the original layout, evaluates that file.
+    A rubric at `<skill>/_hub/rubric.yaml` evaluates `<skill>/SKILL.md`.
     Anything else raises, so a misplaced rubric stops the run rather than
     silently dropping its scenarios.
     """
-    parent = rubric_path.parent
-    skill_dir = parent.parent if parent.name == HUB_DIR else parent
-    skill_md = skill_dir / "SKILL.md"
-    if not skill_md.is_file():
-        raise RubricWithoutSkillError(
+    skill_md = rubric_path.parent.parent / "SKILL.md"
+    if rubric_path.parent.name != HUB_DIR or not skill_md.is_file():
+        raise MisplacedRubricError(
             f"{rubric_path}: no SKILL.md at {skill_md}. A rubric belongs at "
             f"<skill>/{HUB_DIR}/rubric.yaml."
         )

@@ -536,7 +536,7 @@ wheels = [
 
 [[package]]
 name = "skill-eval"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "packages/skill-eval" }
 dependencies = [
     { name = "click" },
@@ -587,7 +587,7 @@ dev = [
 
 [[package]]
 name = "skills-hub-builder"
-version = "0.4.0"
+version = "0.5.0"
 source = { editable = "packages/skills-hub-builder" }
 dependencies = [
     { name = "click" },

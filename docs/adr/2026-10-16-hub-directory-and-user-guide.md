@@ -43,10 +43,13 @@ whether it ships:
   also ships, so the agent can answer "how do I use this?" if the `SKILL.md`
   tells it to read the file.
 - `skill-eval` pairs `<skill>/_hub/rubric.yaml` with `<skill>/SKILL.md`. A
-  `rubric.yaml` beside the `SKILL.md` still pairs, and the builder prints a
-  warning that it is being packaged. A `rubric.yaml` with no `SKILL.md` to pair
-  with stops discovery with an error; before this change it was skipped
-  silently, so a misplaced rubric would have dropped its scenarios unnoticed.
+  `rubric.yaml` anywhere else stops discovery with an error; before this change
+  one with no `SKILL.md` beside it was skipped silently, so a misplaced rubric
+  would have dropped its scenarios unnoticed. The builder also refuses to build
+  with a `rubric.yaml` beside a `SKILL.md`, since it would be packaged.
+- Amended 2026-10-16: the first version also accepted a `rubric.yaml` beside
+  the `SKILL.md`, with a build warning, while `pubdata-skills` and
+  `lawskills-hub` moved theirs. Both have moved, and that path was removed.
 
 ## Alternatives considered
 
@@ -74,8 +77,8 @@ and it is useful to anyone who opens the installed folder.
 
 ## Consequences
 
-- Consumers move each `rubric.yaml` to `_hub/rubric.yaml`. Until they do, their
-  rubrics keep shipping and every build prints a warning per rubric.
+- A hub with a `rubric.yaml` outside `_hub/` fails to build, and its
+  evaluations fail to start, until the file moves.
 - `inventory/<group>.json` gains `summary` (a string or `null`) and `has_guide`
   per skill and meta skill. Both are additions; no field changed meaning.
 - The builder still does not check what a summary or guide says, and no field

@@ -52,7 +52,9 @@ user and an answer.
   router chooses well is what a rubric is for.
 - Zips carry whatever is in the skill directory, so a `rubric.yaml` ships to
   users in both the standalone package and the bundle. It is inert at runtime
-  and it is extra bytes in every download.
+  and it is extra bytes in every download. (Superseded 2026-10-16: rubrics now
+  live in the skill's `_hub/`, which is not packaged. See
+  [the hub-directory record](2026-10-16-hub-directory-and-user-guide.md).)
 - The meta skill's `SKILL.md` in the zip is generated, not the file on disk, so
   a build must run before the placeholder means anything. Reading the source
   file shows `{{ bundled_skills }}`.

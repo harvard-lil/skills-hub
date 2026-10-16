@@ -24,14 +24,14 @@ consumer repository that owns that domain.
 ## Verification
 
 ```bash
-just test            # 89 tests, no network
+just test            # 133 tests, no network
 just lint
 just build-example   # writes example/_site
 just build-self      # writes _site
 just clean
 ```
 
-`just test` runs 89 tests. It establishes that the builder and harness behave as
+`just test` runs 133 tests. It establishes that the builder and harness behave as
 their unit tests specify. It establishes nothing about how a rendered page looks, whether a
 deployment succeeded, or whether any skill is any good. Check rendered output by
 reading `_site/index.html` and `_site/inventory/*.json`, or by serving the

@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 
 from .config import HubConfig
-from .discover import SkillInfo, SkillNode
+from .discover import HUB_DIR, SkillInfo, SkillNode
 
 
 def load_meta_template(config: HubConfig) -> str | None:
@@ -17,13 +17,21 @@ def load_meta_template(config: HubConfig) -> str | None:
     return path.read_text(encoding="utf-8") if path.is_file() else None
 
 
+def packaged_files(skill_dir: Path) -> list[Path]:
+    """List the files a skill's package carries: everything but its `_hub/`."""
+    hub_dir = skill_dir / HUB_DIR
+    return [
+        file
+        for file in sorted(skill_dir.rglob("*"))
+        if file.is_file() and not file.is_relative_to(hub_dir)
+    ]
+
+
 def zip_skill(skill: SkillInfo, output_path: Path) -> None:
     """Zip a single skill directory as a .skill file."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zf:
-        for file in sorted(skill.dir.rglob("*")):
-            if not file.is_file():
-                continue
+        for file in packaged_files(skill.dir):
             arcname = file.relative_to(skill.dir.parent)
             zf.write(file, arcname)
 
@@ -45,17 +53,15 @@ def zip_meta_skill(
         zf.writestr(f"{meta_name}/SKILL.md", rendered_skill_md)
 
         # Include other files from the meta skill dir
-        for file in sorted(meta_skill.dir.rglob("*")):
-            if not file.is_file() or file.name == "SKILL.md":
+        for file in packaged_files(meta_skill.dir):
+            if file.name == "SKILL.md":
                 continue
             arcname = file.relative_to(meta_skill.dir.parent)
             zf.write(file, arcname)
 
         # Bundle child skills
         for skill in bundled_skills:
-            for file in sorted(skill.dir.rglob("*")):
-                if not file.is_file():
-                    continue
+            for file in packaged_files(skill.dir):
                 rel = file.relative_to(skill.dir)
                 if rel.name == "SKILL.md" and rel.parent == Path("."):
                     rel = Path("subskill.md")
@@ -169,6 +175,8 @@ def build_inventory(tree: SkillNode, base_url: str, repo_url: str = "") -> dict:
             skill_entries.append({
                 "name": s.name,
                 "description": s.description,
+                "summary": s.summary or None,
+                "has_guide": s.guide_path is not None,
                 "install_url": f"{base_url}skills/{group_id}/{s.name}.skill",
                 "page_url": f"{base_url}skills/{group_id}/{s.name}.html",
                 "version": s.version,
@@ -181,6 +189,8 @@ def build_inventory(tree: SkillNode, base_url: str, repo_url: str = "") -> dict:
             meta_entry = {
                 "name": meta.name,
                 "description": meta.description,
+                "summary": meta.summary or None,
+                "has_guide": meta.guide_path is not None,
                 "install_url": f"{base_url}skills/{group_id}/{meta.name}.skill",
                 "page_url": f"{base_url}skills/{group_id}/{meta.name}.html",
                 "version": meta.version,

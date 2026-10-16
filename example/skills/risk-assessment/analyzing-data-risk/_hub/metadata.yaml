@@ -1,0 +1,6 @@
+# Hub-only metadata for this skill. Nothing in _hub/ is packaged.
+#
+# summary: what a person browsing the site reads on this skill's card. The
+# SKILL.md `description` is written for an agent deciding when to use the
+# skill; this is written for a person deciding whether to install it.
+summary: Rate how likely a public dataset is to change or disappear, dimension by dimension, with the evidence for each rating.

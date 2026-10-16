@@ -1,7 +1,7 @@
 ---
 name: writing-a-skill
 description: Guides the user through writing a well-structured SKILL.md file with effective frontmatter, clear instructions, and proper boundaries. Use when someone says "help me write a skill" or "how do I structure my skill."
-version: 0.1.0
+version: 0.2.0
 status: draft
 ---
 
@@ -79,7 +79,18 @@ If the skill needs supporting documents (rubrics, schemas, protocols), place the
 See `references/evaluation-rubric.md` for the full criteria.
 ```
 
-## Step 6: Review Checklist
+## Step 6: Add a Guide and a Summary for People (Optional)
+
+The SKILL.md is written for the agent. Two optional files speak to the person who installs the skill:
+
+- `README.md` beside the SKILL.md: how to use the skill — what to have ready, how to start, what comes back, its limits. It is packaged with the skill and shown on the skill's page on the hub site. To let the agent answer "how do I use this?", add a line to the SKILL.md body such as "If the user asks how to use this skill, read README.md."
+- `_hub/metadata.yaml` with a `summary`: one sentence for the skill's card on the site, written for a person deciding whether to install it. Without it, the card shows the `description`. Nothing under `_hub/` is packaged.
+
+```yaml
+summary: Rate how likely a public dataset is to change or disappear, with the evidence for each rating.
+```
+
+## Step 7: Review Checklist
 
 Before finalizing, check:
 - [ ] Description works as a trigger — an agent reading it knows when to activate

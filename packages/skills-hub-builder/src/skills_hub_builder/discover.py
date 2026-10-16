@@ -4,6 +4,12 @@ The skills/ directory is walked recursively. Any directory containing a
 group.yaml is a group. Any directory containing a SKILL.md is a skill.
 A directory can be both (a group with its own meta-skill).
 
+A skill directory may hold a `_hub/` directory for files the hub uses but
+does not ship: `_hub/metadata.yaml` (hub-only metadata such as the `summary`
+shown to people browsing the site) and `_hub/rubric.yaml` (evaluation input).
+Everything else in a skill directory, including a `README.md` guide written for
+the person using the skill, is part of the skill's package.
+
 The result is a tree of SkillNode objects representing the full hierarchy.
 """
 
@@ -22,6 +28,11 @@ import yaml
 STATUS_DRAFT = "draft"
 STATUS_OFFICIAL = "official"
 STATUS_ALIASES = {"preview": STATUS_DRAFT}
+
+#: A skill's hub-only directory, excluded from its package.
+HUB_DIR = "_hub"
+#: The guide for the person using a skill, as opposed to the agent running it.
+GUIDE_FILE = "README.md"
 
 
 def normalize_status(value: str) -> str:
@@ -47,10 +58,27 @@ class SkillInfo:
     status: str = STATUS_DRAFT
     dir: Path = field(default_factory=lambda: Path("."))
     frontmatter: dict[str, str] = field(default_factory=dict)
+    #: Contents of `_hub/metadata.yaml`, or empty when the skill has none.
+    hub_metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_meta(self) -> bool:
         return self.name.endswith("-meta")
+
+    @property
+    def summary(self) -> str:
+        """The one-line description written for people, or "" if none.
+
+        `description` is written for an agent deciding whether to use the
+        skill; `summary` is written for a person deciding whether to install it.
+        """
+        return self.hub_metadata.get("summary", "")
+
+    @property
+    def guide_path(self) -> Path | None:
+        """The skill's `README.md` guide for people, if it has one."""
+        path = self.dir / GUIDE_FILE
+        return path if path.is_file() else None
 
 
 @dataclass
@@ -158,6 +186,24 @@ def load_group_yaml(path: Path) -> GroupInfo:
     )
 
 
+def load_hub_metadata(skill_dir: Path) -> dict[str, Any]:
+    """Load a skill's `_hub/metadata.yaml`, or return {} if it has none."""
+    path = skill_dir / HUB_DIR / "metadata.yaml"
+    if not path.is_file():
+        return {}
+    with open(path, encoding="utf-8") as f:
+        raw = yaml.safe_load(f)
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        raise TypeError(f"{path} must be a YAML mapping, not {type(raw).__name__}")
+    summary = raw.get("summary", "")
+    if not isinstance(summary, str):
+        raise TypeError(f"{path}: `summary` must be a string")
+    raw["summary"] = summary.strip()
+    return raw
+
+
 def discover_tree(skills_dir: Path) -> SkillNode:
     """Walk skills_dir and build the skill tree.
 
@@ -186,6 +232,7 @@ def _discover_node(path: Path, node_id: str) -> SkillNode:
             status=normalize_status(fm.get("status", "")),
             dir=path,
             frontmatter=fm,
+            hub_metadata=load_hub_metadata(path),
         )
 
     # Discover children (subdirectories that contain either group.yaml or SKILL.md)

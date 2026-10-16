@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% block title %}{{ skill.title }} — {{ site.title }}{% endblock %}
-{% block description %}{{ skill.description }}{% endblock %}
+{% block description %}{{ skill.summary or skill.description }}{% endblock %}
 
 {% block content %}
 <article class="skill-page{% if skill.status != 'official' %} is-draft{% endif %}">
@@ -19,7 +19,7 @@
                 <span class="skill-version">v{{ skill.version }}</span>
             </div>
             <h1>{{ skill.title }}</h1>
-            <p class="skill-page-desc">{{ skill.description }}</p>
+            <p class="skill-page-desc">{{ skill.summary or skill.description }}</p>
 
             {% if skill.status != 'official' %}
             <p class="draft-notice">
@@ -40,9 +40,25 @@
             </div>
         </header>
 
+        {% if skill.guide_html %}
+        <section class="skill-guide">
+            <h2 class="skill-section-label">Using this skill</h2>
+            <div class="markdown-body">
+                {{ skill.guide_html }}
+            </div>
+        </section>
+
+        <section class="skill-instructions">
+            <h2 class="skill-section-label">Instructions the agent reads</h2>
+            <div class="skill-body markdown-body">
+                {{ skill.body_html }}
+            </div>
+        </section>
+        {% else %}
         <div class="skill-body markdown-body">
             {{ skill.body_html }}
         </div>
+        {% endif %}
 
         {% if skill.files|length > 1 or skill.is_meta %}
         <section class="skill-files">

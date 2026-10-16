@@ -10,7 +10,6 @@ import click
 @click.group()
 def main():
     """Skills Hub Builder — generate a static site from a collection of agent skills."""
-    pass
 
 
 @main.command()

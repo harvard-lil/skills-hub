@@ -1,148 +1,136 @@
 # Skills Hub
 
-Shared infrastructure for publishing and evaluating collections of AI agent skills.
-A consumer repository holds the skills; this repository holds the generator, the
-evaluation harness, and the GitHub Actions that tie them together, so that several
-hubs can be built the same way without each one carrying its own build scripts.
+Build tooling for publishing a collection of AI agent skills as a static website,
+and for evaluating those skills. A hub repository holds only skills and a little
+configuration. This repository holds the site generator, the evaluation harness,
+and the GitHub workflows that run them.
+[lawskills-hub](https://github.com/harvard-lil/lawskills-hub) is a hub built
+with it.
 
-Status: early. `skills-hub-builder` is at `0.4.0` and `skill-eval` at `0.2.0`, with
-no tagged release and no PyPI publication. Consumers install from git.
+There are no tagged releases and nothing is published to PyPI. Hubs install both
+packages from git and call the workflows at `@main`, so a change merged here
+reaches every hub on its next build.
 
-## Packages
+## Starting a hub
 
-### `skills-hub-builder`
+[example/](example/) is a complete minimal hub. Copying it is the quickest
+start. A hub repository contains:
 
-A static site generator for a directory of agent skills. Given a project with
-`hub.yaml` and `skills/`, `skills-hub-builder build` writes to `_site/`:
-
-- `index.html`, `css/`, `js/` — a one-page site that loads the inventory JSON in
-  the browser and renders group and skill cards with filtering
-- `install.html` — a generic "Get Started" page: how to install a `.skill` pack
-  in an agent, with one-click cards appearing only when `--custom-gpt-url` or a
-  built `.mcpb` supplies them. A project `website/install.html` replaces it;
-  `theme.exclude` can drop it
-- `skills/<group>/<name>.skill` — a zip per skill, and per meta skill
-- `skills/<group>/<name>.html` — a page per skill showing the SKILL.md a
-  visitor would install, so a card can be read before it is downloaded. A
-  `status: draft` skill is marked unreviewed here and on its card; `status:
-  official` is the reviewed state
-- `inventory/groups.json` and `inventory/<group>.json` — the data the page reads,
-  and the same data an agent can read directly
-- `traces/` — copied from the project's `traces/` directory if present, except
-  `index.html`, which is left to whatever `website/traces/index.html` rendered.
-  The bundled theme has no page that displays them.
-
-Two further outputs are off by default and switched on in `hub.yaml`:
-
-- `outputs.gpt_actions` writes `actions/` — `openapi.json`, `openapi.yaml`, and
-  a JSON file per group, per skill, and per skill reference. A ChatGPT Custom GPT
-  points an Action at the spec and fetches the rest as plain GETs. The wire
-  vocabulary is `persona`, not `group`.
-- `outputs.claude_extension` writes `packages/mcpb/<name>.mcpb`, zipped from the
-  project's own `templates/mcpb/` with `{{base_url}}`, `{{personas_json}}` and
-  `{{personas_summary}}` substituted. The builder ships no extension assets of
-  its own; `<name>` is the `name` in the project's `manifest.json`.
-
-Run with `uvx`:
-
-```bash
-uvx --from git+https://github.com/harvard-lil/skills-hub#subdirectory=packages/skills-hub-builder \
-    skills-hub-builder build
-```
-
-The `--custom-gpt-url` option and the matching `custom-gpt-url` workflow input
-reach templates as `custom_gpt_url`; `mcpb_download_url` is supplied alongside it.
-
-### `skill-eval`
-
-An LLM-as-judge harness. It discovers each skill's `_hub/rubric.yaml` under `skills/`, replays
-each rubric's scripted user turns against a model with the `SKILL.md` as system
-prompt, scores the transcript with a judge model, and writes a JSON trace per run
-to `traces/`. Each scenario also runs against a bare model with no skill installed,
-recorded under version `_null`, so a hub can see whether the skill beats the
-baseline.
-
-Run with `uvx`:
-
-```bash
-uvx --from git+https://github.com/harvard-lil/skills-hub#subdirectory=packages/skill-eval \
-    skill-eval run
-```
-
-Running evaluations calls a paid API. The default configuration points at
-OpenRouter and reads `OPENROUTER_API_KEY`; without a key the tests skip.
-
-## Project layout
-
-```
-skills-hub/
-├── packages/
-│   ├── skills-hub-builder/     # Site generator + packager
-│   └── skill-eval/             # Evaluation harness
-├── actions/                    # Composite actions (build, eval)
-├── .github/workflows/          # Reusable workflows consumers call
-├── skills/                     # This repo's own hub-setup skills
-├── hub.yaml                    # This repo builds itself as a hub
-├── example/                    # Minimal example consumer project
-└── docs/                       # Commitments, decisions, roadmap, research
-```
-
-This repository is also a consumer of its own builder: `hub.yaml` and
-`skills/hub-setup/` produce one group holding three skills and a meta skill, so a
-change that breaks the consumer contract breaks this repo's own build.
-
-## Using it in your project
-
-[example/](example/) is a working consumer project — the fastest way to see the
-whole contract at once. In full, a consumer needs:
-
-| Path | Required for | Purpose |
+| Path | Needed for | Purpose |
 |---|---|---|
-| `hub.yaml` | site | Title, org, theme, output toggles |
-| `skills/<group>/group.yaml` | group labels | Without it the group still builds, with a title-cased id and no description. An optional integer `order` sorts the group ahead of unordered (alphabetical) ones |
-| `skills/<group>/<skill>/SKILL.md` | everything | YAML frontmatter plus the instructions |
-| `skills/<group>/<skill>/README.md` | guide page | How to use the skill, written for the person installing it. Packaged, and shown above the instructions on the skill's page |
-| `skills/<group>/<skill>/_hub/metadata.yaml` | card text | `summary`: one sentence for people browsing the site; cards fall back to the agent-facing `description` without it. Nothing under `_hub/` is packaged |
-| `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. A `rubric.yaml` beside `SKILL.md` still evaluates but is packaged, and the build warns |
+| `hub.yaml` | site | Title, organization, theme, output toggles |
+| `skills/<group>/group.yaml` | group labels | Label, description, and an optional integer `order` that sorts the group ahead of unordered (alphabetical) ones. Without it the group still builds, with a title-cased id and no description |
+| `skills/<group>/<skill>/SKILL.md` | everything | YAML frontmatter plus the instructions the agent follows |
+| `skills/<group>/<skill>/README.md` | guide | How to use the skill, written for the person installing it. Packaged, and shown above the instructions on the skill's page |
+| `skills/<group>/<skill>/_hub/metadata.yaml` | card text | `summary`: one sentence for people browsing the site. Cards fall back to the agent-facing `description` without it |
+| `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. A `rubric.yaml` beside `SKILL.md` still evaluates, but it is packaged and the build warns |
 | `templates/meta-skill.md` | meta skill bodies | A wrapper every meta skill is composed into. Without it, a meta `SKILL.md` keeps its own body and its `{{ bundled_skills }}` placeholder is expanded in place |
-| `templates/mcpb/` | `outputs.claude_extension` | The extension's own files, `manifest.json` at the root |
+| `templates/mcpb/` | `outputs.claude_extension` | The extension's own files, with `manifest.json` at the root |
 | `eval.yaml` | evaluation | Models under test, judge models, API base URL |
 | `tests/test_skills.py` | evaluation | One line: `from skill_eval.test_skills import *` |
 | `.github/workflows/deploy.yml` | deployment | One job calling `harvard-lil/skills-hub/.github/workflows/build-and-deploy.yml@main` |
 
-Deployment also requires GitHub Pages to be enabled on the consumer repository
-with Source set to GitHub Actions; the workflow cannot turn that on itself.
-
-The discovery rules — what counts as a group, what counts as a skill, how meta
-skills bundle their siblings — are defined in
-[`packages/skills-hub-builder/src/skills_hub_builder/discover.py`](packages/skills-hub-builder/src/skills_hub_builder/discover.py)
+Everything in a skill directory goes into the skill's package except `_hub/`,
+which holds files only the hub reads. A skill whose `name` ends in `-meta` is its
+group's router: its package bundles the group's other skills. The full
+discovery rules are in
+[`discover.py`](packages/skills-hub-builder/src/skills_hub_builder/discover.py)
 and summarized in [docs/commitments.md](docs/commitments.md).
 
-## Development
+GitHub Pages has to be enabled on the hub repository with Source set to GitHub
+Actions. The deploy workflow cannot turn it on.
 
-`just --list` is authoritative. The recipes routine work uses:
+## `skills-hub-builder`
+
+Generates the site. Run in a hub repository:
+
+```bash
+uvx --from git+https://github.com/harvard-lil/skills-hub#subdirectory=packages/skills-hub-builder skills-hub-builder build
+```
+
+It writes `_site/`:
+
+- `index.html`, `css/`, `js/`: the index page. It loads the inventory JSON in
+  the browser and renders a card per group and skill.
+- `skills/<group>/<name>.skill`: a zip per skill and per meta skill.
+- `skills/<group>/<name>.html`: a page per skill showing the skill's guide, if it
+  has one, then the `SKILL.md` it would install. Skills with `status: draft` are
+  marked as unreviewed here and on their cards; `status: official` is the
+  reviewed state.
+- `inventory/groups.json`, `inventory/<group>.json`: the data the index page
+  reads, published for agents to read too.
+- `install.html`: a generic page on installing a `.skill` in an agent. It shows
+  one-click cards only when `--custom-gpt-url` or a built `.mcpb` provides them.
+  A hub's `website/install.html` replaces it, and `theme.exclude` can drop it.
+- `traces/`: copied from the hub's `traces/` directory if present. No page in the
+  bundled theme displays them; a hub that wants a trace index supplies
+  `website/traces/index.html`.
+
+Two more outputs are off unless `hub.yaml` turns them on:
+
+- `outputs.gpt_actions` writes `actions/`: `openapi.json`, `openapi.yaml`, and a
+  JSON file per group, skill, and skill reference, for a ChatGPT Custom GPT to
+  fetch as plain GETs. These files call a group a `persona`.
+- `outputs.claude_extension` writes `packages/mcpb/<name>.mcpb`, zipped from the
+  hub's `templates/mcpb/` with `{{base_url}}`, `{{personas_json}}` and
+  `{{personas_summary}}` substituted. `<name>` comes from the hub's
+  `manifest.json`; the builder supplies no extension files of its own.
+
+## `skill-eval`
+
+An LLM-as-judge harness. For each skill's `_hub/rubric.yaml`, it plays the
+rubric's scripted user turns against each model under test, with the `SKILL.md`
+as system prompt. A judge model then scores the transcript against the rubric,
+and the harness writes a JSON trace to `traces/`. Each scenario also runs against
+the bare model with no skill, recorded as version `_null`, as a baseline.
+
+```bash
+uvx --from git+https://github.com/harvard-lil/skills-hub#subdirectory=packages/skill-eval skill-eval run
+```
+
+Runs call a paid API. The default configuration uses OpenRouter and reads
+`OPENROUTER_API_KEY`; without a key, the evaluation tests skip.
+
+## Developing this repository
+
+```
+packages/skills-hub-builder/   site generator and packager
+packages/skill-eval/           evaluation harness
+actions/                       composite actions (build, eval)
+.github/workflows/             reusable workflows that hubs call, and this repo's CI
+skills/hub-setup/              this repository's own skills, for setting up a hub
+hub.yaml                       builds those skills as a hub
+example/                       minimal example hub
+docs/                          commitments, decisions, roadmap, research
+```
+
+This repository builds its own `skills/hub-setup/` as a hub. A change that
+breaks the hub contract therefore breaks `just build-self` as well as
+`just build-example`.
+
+`just --list` shows all recipes. The common ones:
 
 | Recipe | What it does |
 |---|---|
 | `just dev` | `uv sync --all-packages` |
-| `just test` | Run both package test suites |
+| `just test` | Both packages' unit tests; no network access |
 | `just lint` / `just fmt` | Ruff check / format over `packages/` |
-| `just inspect-example` | Print the discovered skill tree for `example/` |
 | `just build-example` | Build `example/` into `example/_site` |
-| `just build-self` | Build this repo's own hub into `_site` |
+| `just build-self` | Build this repository's hub into `_site` |
+| `just inspect-example` | Print the skill tree discovered in `example/` |
 | `just discover-example` | List the example's rubrics and scenarios |
 | `just clean` | Remove `_site` and `example/_site` |
 
-`just test` runs 133 tests as of 2026-10-16 and exercises the builder's
-configuration, discovery, packaging, rendering, GPT Actions and extension
-packaging plus the harness's runner, evaluator, and trace writer. It makes no
-network calls and does not evaluate any skill's quality.
+CI runs `just lint`, `just test`, `just build-example` and `just build-self` on
+every pull request and on pushes to `main`. The unit tests cover the builder and
+the harness's own code; they do not judge any skill's quality, and they do not
+call a model.
 
 ## Documentation
 
-- [AGENTS.md](AGENTS.md) — rules for changing this repository
-- [docs/commitments.md](docs/commitments.md) — the consumer contract, checked
-  facts, known gaps, and what is deliberately out of scope
-- [docs/adr/](docs/adr/) — why the structure is what it is
-- [docs/roadmap.md](docs/roadmap.md) — what is next and what is unresolved
-- [docs/research/](docs/research/) — checked evidence, with dates
+- [AGENTS.md](AGENTS.md): rules for changing this repository
+- [docs/commitments.md](docs/commitments.md): the hub contract, checked facts,
+  known gaps, and what is deliberately out of scope
+- [docs/adr/](docs/adr/): why the structure is what it is
+- [docs/roadmap.md](docs/roadmap.md): what is next and what is unresolved
+- [docs/research/](docs/research/): checked evidence, with dates

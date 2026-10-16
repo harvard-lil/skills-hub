@@ -10,7 +10,6 @@ import click
 @click.group()
 def main():
     """skill-eval — evaluate AI agent skills against rubrics."""
-    pass
 
 
 @main.command()
@@ -39,7 +38,7 @@ def run(project: Path, rerun: bool, verbose: bool):
     if verbose:
         cmd.append("-vv")
 
-    result = subprocess.run(cmd, cwd=str(project))
+    result = subprocess.run(cmd, cwd=str(project), check=False)
     raise SystemExit(result.returncode)
 
 

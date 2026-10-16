@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from skills_hub_builder.config import HubConfig, load_config
+from skills_hub_builder.config import load_config
 
 
 def test_load_config_with_hub_yaml(tmp_project: Path):

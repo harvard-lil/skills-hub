@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from skills_hub_builder.discover import (
     GroupInfo,
     SkillInfo,

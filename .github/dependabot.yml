@@ -1,0 +1,39 @@
+# Weekly updates for the uv workspace lock and for the actions used by the
+# reusable workflows and composite actions. The github-actions ecosystem finds
+# a composite action's action.yml only when its directory is listed, so each
+# one under actions/ is listed beside "/".
+version: 2
+
+updates:
+  - package-ecosystem: uv
+    directory: "/"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    groups:
+      python-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directories:
+      - "/"
+      - "/actions/build"
+      - "/actions/eval"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    groups:
+      actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

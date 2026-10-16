@@ -1,18 +1,14 @@
 """Tests for the LLM-as-judge evaluator."""
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from skill_eval.evaluator import (
-    AntiPatternResult,
     CriterionEval,
     EvaluationReport,
-    QualitativeRating,
-    StructuralResult,
     _parse_judge_response,
     evaluate_trace,
 )
-from skill_eval.runner import ConversationTrace, Message, ModelConfig
 
 
 class TestParseJudgeResponse:
@@ -83,8 +79,8 @@ class TestEvaluationReport:
             qualitative=[CriterionEval("q1", "d", "strong", "great")],
             anti_patterns=[CriterionEval("ap1", "d", "violation", "bad")],
         )
-        base_score = 40 + 40 + 20  # would be 100
-        assert report.score() == 80.0  # -20 penalty
+        # 100 before the -20 anti-pattern penalty
+        assert report.score() == 80.0
 
     def test_has_anti_pattern_violations(self):
         report = self._make_report(

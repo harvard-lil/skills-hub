@@ -1,6 +1,7 @@
 """Pytest plugin for skill evaluation.
 
-Automatically discovers rubric.yaml files in a skills/ directory,
+Automatically discovers rubric.yaml files in a skills/ directory
+(at `<skill>/_hub/rubric.yaml`, or beside the SKILL.md in older projects),
 provides fixtures for OpenAI clients and model configs, and
 parametrizes tests over discovered scenarios.
 
@@ -91,13 +92,38 @@ def _infer_group(skill_path: Path, skills_dir: Path) -> str:
         return "default"
 
 
+#: A skill's hub-only directory, where its rubric lives.
+HUB_DIR = "_hub"
+
+
+class RubricWithoutSkillError(Exception):
+    """A rubric.yaml was found where no SKILL.md can be paired with it."""
+
+
+def skill_md_for_rubric(rubric_path: Path) -> Path:
+    """Return the SKILL.md a rubric evaluates.
+
+    A rubric at `<skill>/_hub/rubric.yaml` evaluates `<skill>/SKILL.md`. A
+    rubric directly beside a SKILL.md, the original layout, evaluates that file.
+    Anything else raises, so a misplaced rubric stops the run rather than
+    silently dropping its scenarios.
+    """
+    parent = rubric_path.parent
+    skill_dir = parent.parent if parent.name == HUB_DIR else parent
+    skill_md = skill_dir / "SKILL.md"
+    if not skill_md.is_file():
+        raise RubricWithoutSkillError(
+            f"{rubric_path}: no SKILL.md at {skill_md}. A rubric belongs at "
+            f"<skill>/{HUB_DIR}/rubric.yaml."
+        )
+    return skill_md
+
+
 def discover_rubrics(skills_dir: Path) -> list[dict]:
     """Find all rubric.yaml files and pair them with their SKILL.md."""
     rubrics = []
     for rubric_path in sorted(skills_dir.rglob("rubric.yaml")):
-        skill_md = rubric_path.parent / "SKILL.md"
-        if not skill_md.exists():
-            continue
+        skill_md = skill_md_for_rubric(rubric_path)
         with open(rubric_path, encoding="utf-8") as f:
             rubric = yaml.safe_load(f)
         rubric["_rubric_path"] = rubric_path

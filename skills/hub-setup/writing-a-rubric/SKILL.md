@@ -1,7 +1,7 @@
 ---
 name: writing-a-rubric
 description: Guides the user through creating a rubric.yaml evaluation file for testing whether a skill works well. Use when someone says "how do I test my skill," "write a rubric," or "set up evaluation."
-version: 0.1.0
+version: 0.2.0
 status: draft
 ---
 
@@ -98,7 +98,7 @@ Key rules:
 
 ## Step 6: Assemble
 
-Produce the complete rubric.yaml:
+Produce the complete rubric.yaml, to be saved at `<skill>/_hub/rubric.yaml`. Files under `_hub/` are used by the hub and are never packaged with the skill, so the people who install it — and the agent running it — do not see the criteria or the test scenarios.
 
 ```yaml
 group: <group-id>

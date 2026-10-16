@@ -36,10 +36,13 @@ uvx --from ../packages/skill-eval skill-eval run
 │   │   ├── risk-assessment-meta/
 │   │   │   └── SKILL.md        # Meta-skill (router)
 │   │   └── analyzing-data-risk/
-│   │       ├── SKILL.md        # Skill instructions
-│   │       ├── rubric.yaml     # Evaluation rubric
-│   │       └── references/     # Supporting documents
-│   │           └── risk-rubric.md
+│   │       ├── SKILL.md        # Instructions for the agent
+│   │       ├── README.md       # Guide for the person using it (packaged)
+│   │       ├── references/     # Supporting documents (packaged)
+│   │       │   └── risk-rubric.md
+│   │       └── _hub/           # Hub-only files (not packaged)
+│   │           ├── metadata.yaml  # `summary` shown on the site
+│   │           └── rubric.yaml    # Evaluation rubric
 │   └── monitoring/             # Group: Dataset Monitoring
 │       ├── group.yaml
 │       └── binoc-diffs/

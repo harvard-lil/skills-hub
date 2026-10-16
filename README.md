@@ -5,7 +5,7 @@ A consumer repository holds the skills; this repository holds the generator, the
 evaluation harness, and the GitHub Actions that tie them together, so that several
 hubs can be built the same way without each one carrying its own build scripts.
 
-Status: early. `skills-hub-builder` is at `0.2.0` and `skill-eval` at `0.1.0`, with
+Status: early. `skills-hub-builder` is at `0.4.0` and `skill-eval` at `0.2.0`, with
 no tagged release and no PyPI publication. Consumers install from git.
 
 ## Packages
@@ -55,7 +55,7 @@ reach templates as `custom_gpt_url`; `mcpb_download_url` is supplied alongside i
 
 ### `skill-eval`
 
-An LLM-as-judge harness. It discovers `rubric.yaml` files under `skills/`, replays
+An LLM-as-judge harness. It discovers each skill's `_hub/rubric.yaml` under `skills/`, replays
 each rubric's scripted user turns against a model with the `SKILL.md` as system
 prompt, scores the transcript with a judge model, and writes a JSON trace per run
 to `traces/`. Each scenario also runs against a bare model with no skill installed,
@@ -101,7 +101,9 @@ whole contract at once. In full, a consumer needs:
 | `hub.yaml` | site | Title, org, theme, output toggles |
 | `skills/<group>/group.yaml` | group labels | Without it the group still builds, with a title-cased id and no description. An optional integer `order` sorts the group ahead of unordered (alphabetical) ones |
 | `skills/<group>/<skill>/SKILL.md` | everything | YAML frontmatter plus the instructions |
-| `skills/<group>/<skill>/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios |
+| `skills/<group>/<skill>/README.md` | guide page | How to use the skill, written for the person installing it. Packaged, and shown above the instructions on the skill's page |
+| `skills/<group>/<skill>/_hub/metadata.yaml` | card text | `summary`: one sentence for people browsing the site; cards fall back to the agent-facing `description` without it. Nothing under `_hub/` is packaged |
+| `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. A `rubric.yaml` beside `SKILL.md` still evaluates but is packaged, and the build warns |
 | `templates/meta-skill.md` | meta skill bodies | A wrapper every meta skill is composed into. Without it, a meta `SKILL.md` keeps its own body and its `{{ bundled_skills }}` placeholder is expanded in place |
 | `templates/mcpb/` | `outputs.claude_extension` | The extension's own files, `manifest.json` at the root |
 | `eval.yaml` | evaluation | Models under test, judge models, API base URL |
@@ -131,7 +133,7 @@ and summarized in [docs/commitments.md](docs/commitments.md).
 | `just discover-example` | List the example's rubrics and scenarios |
 | `just clean` | Remove `_site` and `example/_site` |
 
-`just test` runs 89 tests as of 2026-08-20 and exercises the builder's
+`just test` runs 133 tests as of 2026-10-16 and exercises the builder's
 configuration, discovery, packaging, rendering, GPT Actions and extension
 packaging plus the harness's runner, evaluator, and trace writer. It makes no
 network calls and does not evaluate any skill's quality.

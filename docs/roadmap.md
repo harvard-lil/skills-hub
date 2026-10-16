@@ -39,6 +39,12 @@ wire name and stop apologizing for it.
 `headline` and `pitch` are the same problem one level down: `GroupInfo` has
 neither, so `actions/personas/*.json` derives `headline` from the group
 description and reads `pitch` out of the `design` block it also publishes whole.
+Skills now have a user-facing `summary` in `_hub/metadata.yaml`
+([adr](adr/2026-10-16-hub-directory-and-user-guide.md)); a `summary` field in
+`group.yaml` would give `pitch` the same home at group level.
+
+`pubdata-skills` and `lawskills-hub` still keep `rubric.yaml` beside `SKILL.md`,
+so their rubrics ship until each moves them to `_hub/rubric.yaml`.
 
 ## Defects worth fixing before more consumers arrive
 

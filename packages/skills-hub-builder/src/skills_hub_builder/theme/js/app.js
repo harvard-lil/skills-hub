@@ -143,7 +143,7 @@ function renderGroup(inv) {
                         <h3>${label} Pack</h3>
                         ${statusBadge(metaStatus)}
                     </div>
-                    <p class="meta-desc">${inv.meta_skill.description || inv.description}</p>
+                    <p class="meta-desc">${inv.meta_skill.summary || inv.meta_skill.description || inv.description}</p>
                 </div>
                 <div class="meta-callout-actions">
                     ${viewLink}
@@ -195,7 +195,7 @@ function renderSkillCard(skill, groupLabel) {
             ${statusBadge(status)}
         </div>
         <h3 class="skill-title">${formatTitle(skill.name)}</h3>
-        <p class="skill-desc">${truncate(skill.description, 180)}</p>
+        <p class="skill-desc">${truncate(skill.summary || skill.description, 180)}</p>
         <div class="card-actions">${readBtn}${downloadBtn}</div>
         <div class="card-links">${editLink}</div>
     `;

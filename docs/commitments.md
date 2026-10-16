@@ -46,6 +46,14 @@ on read, so a consumer that has not swept its frontmatter still builds. Any
 status the builder does not recognise is published as written and treated as a
 draft by the site.
 
+**A skill's `_hub/` never ships.** Everything in a skill directory is packaged
+except its root `_hub/`, which holds files only the hub reads:
+`_hub/metadata.yaml` (`summary`, the sentence a person reads on the card) and
+`_hub/rubric.yaml`. `README.md` is the guide for the person using the skill; it
+ships and leads the skill's page. The `SKILL.md` `description` stays written for
+an agent. See
+[adr/2026-10-16-hub-directory-and-user-guide.md](adr/2026-10-16-hub-directory-and-user-guide.md).
+
 **The inventory JSON is a public interface.** `inventory/groups.json` and
 `inventory/<group>.json` are read by the site's own JavaScript and, by design, by
 agents fetching the hub directly. Changing their shape is a breaking change for
@@ -77,6 +85,12 @@ Checked 2026-08-20 against the working tree.
   placeholder. Skill pages are rendered at build time from `_skill.html`, and a
   meta skill's page shows the composed body its `.skill` carries rather than the
   template. Checked 2026-09-01.
+- With `analyzing-data-risk`'s rubric in `_hub/`, `just build-example` writes a
+  standalone zip holding `README.md`, `SKILL.md` and `references/risk-rubric.md`
+  only, and the meta zip holds no `_hub/` or `rubric.yaml`. The inventory
+  carries `summary` and `has_guide: true`, and the skill page shows the summary,
+  then the guide, then the instructions. `just test` passes 133 tests (104
+  builder, 29 harness). Checked 2026-10-16.
 - This repository has no `.git` directory and no remote. Every file is dated
   2026-08-19 or later, and there is no commit history to consult for rationale.
 - The builder has now been pointed at `lawskills-hub`, whose site was previously

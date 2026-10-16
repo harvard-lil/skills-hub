@@ -864,12 +864,13 @@ body {
     margin: 2rem 0;
 }
 
-.skill-files {
+.skill-instructions {
     margin-top: 2.5rem;
     border-top: 1px solid var(--color-border);
     padding-top: 1.5rem;
 }
 
+.skill-section-label,
 .skill-files h2 {
     font-size: 0.75rem;
     font-family: var(--font-mono);
@@ -877,6 +878,12 @@ body {
     text-transform: uppercase;
     color: var(--color-text-muted);
     margin-bottom: 0.75rem;
+}
+
+.skill-files {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.5rem;
 }
 
 .skill-files ul {

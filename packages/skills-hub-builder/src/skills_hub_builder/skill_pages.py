@@ -5,6 +5,10 @@ download it, which is what the site otherwise asks them to take on faith. A meta
 skill's page shows the composed body that its `.skill` package carries, not the
 template with `{{ bundled_skills }}` still in it.
 
+When a skill has a `README.md` guide for the person using it, the page leads
+with the guide and shows the SKILL.md beneath it as the instructions the agent
+reads.
+
 Pages are written to `skills/<group>/<name>.html`, alongside the `.skill` zips,
 and are linked from the cards by `page_url` in the inventory JSON.
 """
@@ -19,7 +23,7 @@ from markdown_it import MarkdownIt
 
 from .config import HubConfig
 from .discover import SkillInfo, SkillNode
-from .packager import load_meta_template, render_meta_skill_md
+from .packager import load_meta_template, packaged_files, render_meta_skill_md
 from .renderer import expand_nav
 
 #: Files that are part of the package but not worth listing as content.
@@ -59,12 +63,11 @@ def render_body_html(markdown_text: str) -> str:
 
 def package_files(skill: SkillInfo) -> list[str]:
     """List the files a skill's `.skill` package carries, relative to its root."""
-    files = []
-    for path in sorted(skill.dir.rglob("*")):
-        if not path.is_file() or path.name in _HIDDEN_FILES:
-            continue
-        files.append(str(path.relative_to(skill.dir)))
-    return files
+    return [
+        str(path.relative_to(skill.dir))
+        for path in packaged_files(skill.dir)
+        if path.name not in _HIDDEN_FILES
+    ]
 
 
 def format_title(name: str) -> str:
@@ -157,6 +160,12 @@ def build_skill_pages(
                         f"{group_node.label} Pack" if skill.is_meta else format_title(skill.name)
                     ),
                     "description": skill.description,
+                    "summary": skill.summary,
+                    "guide_html": (
+                        render_body_html(skill.guide_path.read_text(encoding="utf-8"))
+                        if skill.guide_path
+                        else ""
+                    ),
                     "version": skill.version,
                     "status": skill.status,
                     "is_meta": skill.is_meta,

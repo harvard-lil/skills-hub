@@ -79,3 +79,11 @@ Route reasoning to its home rather than restating it here: adopted invariants an
 known gaps in [docs/commitments.md](docs/commitments.md), decisions and their
 alternatives in [docs/adr/](docs/adr/), sequencing in
 [docs/roadmap.md](docs/roadmap.md), dated evidence in [docs/research/](docs/research/).
+
+Guides for skill authors live in [docs/guides/](docs/guides/). Read
+[writing-skills.md](docs/guides/writing-skills.md) before writing or advising
+on a skill's instructions, its `description` or `summary`, or its `README.md`.
+Read
+[running-a-user-test.md](docs/guides/running-a-user-test.md) before planning or
+analyzing a user test. Add to these guides when a finding from a consumer
+repository applies to skills in general.

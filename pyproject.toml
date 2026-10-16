@@ -9,7 +9,7 @@ dependencies = []
 [dependency-groups]
 dev = [
     "pytest>=8.0",
-    "ruff>=0.5",
+    "ruff>=0.16.10",
     "skills-hub-builder",
     "skill-eval",
 ]

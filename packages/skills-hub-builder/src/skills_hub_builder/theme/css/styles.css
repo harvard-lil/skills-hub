@@ -648,6 +648,18 @@ body {
     margin-top: auto;
 }
 
+.install-command {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
 .install-dev-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

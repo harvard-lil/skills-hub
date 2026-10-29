@@ -19,6 +19,7 @@ from .packager import (
 )
 from .renderer import build_template_env, render_site
 from .skill_pages import build_skill_pages
+from .suite_bundle import build_suite_bundle
 
 
 def build(
@@ -55,8 +56,15 @@ def build(
     if config.outputs.skill_packages:
         _package_skills(tree, config, base_url=base_url, repo_url=repo_url)
 
+    # One bundle of every skill in the hub, with the catalogs that install it
+    suite_bundle = None
+    if config.outputs.suite_bundle:
+        suite_bundle = build_suite_bundle(tree, config, base_url=base_url, repo_url=repo_url)
+
     # Generate inventory
     inv_data = build_inventory(tree, base_url, repo_url)
+    if suite_bundle:
+        inv_data["groups"]["suite"] = suite_bundle.inventory_entry()
     write_inventory(inv_data, output_dir)
 
     # Render website
@@ -68,6 +76,7 @@ def build(
             repo_url=repo_url,
             custom_gpt_url=custom_gpt_url,
             mcpb_download_url=mcpb_download_url(config, base_url),
+            suite_bundle=suite_bundle,
         )
         build_skill_pages(
             tree,

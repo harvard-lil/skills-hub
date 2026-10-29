@@ -587,7 +587,7 @@ dev = [
 
 [[package]]
 name = "skills-hub-builder"
-version = "0.5.1"
+version = "0.6.0"
 source = { editable = "packages/skills-hub-builder" }
 dependencies = [
     { name = "click" },

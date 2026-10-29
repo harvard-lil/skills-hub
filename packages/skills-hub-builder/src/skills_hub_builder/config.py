@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -29,6 +30,27 @@ class OutputsConfig:
     skill_packages: bool = True
     gpt_actions: bool = False
     claude_extension: bool = False
+    suite_bundle: bool = False
+
+
+@dataclass
+class SuiteConfig:
+    """Naming for the hub-wide bundle written when outputs.suite_bundle is on.
+
+    The bundle is one plugin holding every skill in the hub. `name` is the
+    plugin's identifier (it prefixes each skill in Claude, as `name:skill`)
+    and the bundle's filename. `marketplace` names the Claude Code catalog
+    that lists it, so the install id is `<name>@<marketplace>`. Both default
+    to a slug of the site title. `version` pins the plugin version; left
+    empty, the builder derives one from the bundle's contents so that a build
+    with unchanged skills publishes an unchanged version.
+    """
+
+    name: str = ""
+    display_name: str = ""
+    description: str = ""
+    marketplace: str = ""
+    version: str = ""
 
 
 @dataclass
@@ -51,6 +73,7 @@ class HubConfig:
     theme: ThemeConfig = field(default_factory=ThemeConfig)
     outputs: OutputsConfig = field(default_factory=OutputsConfig)
     actions: ActionsConfig = field(default_factory=ActionsConfig)
+    suite: SuiteConfig = field(default_factory=SuiteConfig)
     nav: list[dict[str, str]] = field(default_factory=list)
 
     # Resolved paths (set after load)
@@ -107,12 +130,23 @@ def load_config(project_root: Path) -> HubConfig:
         skill_packages=outputs_raw.get("skill_packages", True),
         gpt_actions=outputs_raw.get("gpt_actions", False),
         claude_extension=outputs_raw.get("claude_extension", False),
+        suite_bundle=outputs_raw.get("suite_bundle", False),
     )
 
     actions_raw = raw.get("actions", {})
     actions = ActionsConfig(
         title=actions_raw.get("title", site.title),
         description=actions_raw.get("description", site.subtitle),
+    )
+
+    suite_raw = raw.get("suite", {}) or {}
+    suite_name = suite_raw.get("name") or slugify(site.title)
+    suite = SuiteConfig(
+        name=suite_name,
+        display_name=suite_raw.get("display_name", site.title),
+        description=suite_raw.get("description", site.subtitle),
+        marketplace=suite_raw.get("marketplace") or suite_name,
+        version=str(suite_raw.get("version", "") or ""),
     )
 
     nav = raw.get("nav", [])
@@ -122,6 +156,12 @@ def load_config(project_root: Path) -> HubConfig:
         theme=theme,
         outputs=outputs,
         actions=actions,
+        suite=suite,
         nav=nav,
         project_root=project_root.resolve(),
     )
+
+
+def slugify(text: str) -> str:
+    """Lowercase `text` and join its words with single hyphens."""
+    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")

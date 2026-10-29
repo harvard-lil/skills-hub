@@ -67,6 +67,70 @@
     </section>
     {% endif %}
 
+    {% if suite_bundle %}
+    <!-- Install every skill at once -->
+    <section class="install-tier" id="install-everything">
+        <div class="container">
+            <h2 class="install-tier-heading">Install Everything</h2>
+            <p class="install-tier-desc">
+                One install adds all {{ suite_bundle.skill_count }} skills, each with its own
+                description, so your agent picks the right one for each request. Use this
+                <em>or</em> the packs below, not both: installing the same skill twice gives your
+                agent two copies to choose between.
+            </p>
+            <div class="install-cards">
+
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <h2>Claude</h2>
+                    </div>
+                    <p class="install-card-desc">
+                        On claude.ai or in the Claude desktop app, open
+                        <em>Customize &rarr; Plugins</em>, choose <em>Add &rarr; Upload plugin</em>,
+                        and upload this file. It also appears in Cowork, and in Claude Code when you
+                        sign in with the same account.
+                    </p>
+                    <a href="{{ root or './' }}{{ suite_bundle.bundle_path }}" class="btn btn-primary install-card-btn" download>
+                        Download {{ suite_bundle.display_name }} (.zip)
+                    </a>
+                </div>
+
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <h2>Claude Code</h2>
+                    </div>
+                    <p class="install-card-desc">
+                        In a session, this adds the site&rsquo;s plugin catalog and opens the
+                        bundle&rsquo;s install screen (Claude Code 2.1.275 or later). Later,
+                        <code>/plugin marketplace update {{ suite_bundle.marketplace }}</code> brings in
+                        new versions.
+                    </p>
+                    <pre class="install-command"><code>/plugin install {{ suite_bundle.name }} --marketplace {{ suite_bundle.url(suite_bundle.marketplace_path) }}</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <div class="install-card-header">
+                        <h2>Other agents</h2>
+                    </div>
+                    <p class="install-card-desc">
+                        The open-source <a href="https://github.com/vercel-labs/skills" target="_blank">skills</a>
+                        installer (Node.js 22.20 or later) copies every skill into the folders that Codex,
+                        Cursor, Gemini CLI, GitHub Copilot, and other agents read, and asks which agents
+                        you use. Add <code>-g</code> to install for your user rather than the current
+                        project; <code>npx skills update</code> brings in new versions.
+                    </p>
+                    <pre class="install-command"><code>npx skills add {{ suite_bundle.base_url or './' }} --skill '*'</code></pre>
+                    <p class="install-card-desc">
+                        Without Node.js, download the .zip and copy the folders under
+                        <code>skills/</code> into your agent&rsquo;s skills folder.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
     <!-- Install a skill pack -->
     <section class="install-tier install-tier-alt">
         <div class="container">
@@ -82,7 +146,7 @@
                     <strong>Download</strong> the <code>.skill</code> file for the pack or skill you want.
                 </li>
                 <li>
-                    <strong>Add it to your agent.</strong> In Claude, open <em>Settings &rarr; Capabilities &rarr; Skills</em>
+                    <strong>Add it to your agent.</strong> In Claude, open <em>Customize &rarr; Skills</em>
                     and upload the file. In Claude Code, unzip it into your <code>.claude/skills/</code> folder.
                     Other agents that support the open <a href="https://agentskills.io/" target="_blank">Agent Skills</a>
                     standard have an equivalent place for skills &mdash; check your agent&rsquo;s documentation.

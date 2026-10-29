@@ -50,6 +50,13 @@ evidence.
   checked against `lawskills-hub` on 2026-08-20. Nobody has confirmed that a
   ChatGPT Custom GPT reads the spec, or that Claude Desktop installs the `.mcpb`.
   Describe them as produced, not as working end to end.
+- `outputs.suite_bundle` writes files that were checked on 2026-10-28 with
+  `claude plugin validate`, a Claude Code install from a local copy of the
+  marketplace, and the `skills` CLI against a locally served build. Nobody has
+  installed the bundle from a published site, uploaded it to claude.ai, or
+  confirmed that GitHub Pages serves `.well-known/`. Describe the archive
+  download, the upload, and the well-known index as produced, not as working
+  end to end.
 - `templates/mcpb/` is the consumer's, not the builder's. Do not move extension
   assets into this repository; a hub's MCP server, its instructions, and its
   identity belong to the hub that publishes them.

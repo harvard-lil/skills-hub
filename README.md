@@ -25,6 +25,7 @@ start. A hub repository contains:
 | `skills/<group>/<skill>/_hub/metadata.yaml` | card text | `summary`: one sentence for people browsing the site. Cards fall back to the agent-facing `description` without it |
 | `skills/<group>/<skill>/_hub/rubric.yaml` | evaluation | Criteria, anti-patterns, scenarios. Only this location is read as a rubric |
 | `templates/meta-skill.md` | meta skill bodies | A wrapper every meta skill is composed into. Without it, a meta `SKILL.md` keeps its own body and its `{{ bundled_skills }}` placeholder is expanded in place |
+| `skills/<skill>/SKILL.md` | `outputs.suite_bundle` | A hub-level skill outside any group, such as an orientation; bundled first, with `{{ suite_skills }}` expanded |
 | `templates/mcpb/` | `outputs.claude_extension` | The extension's own files, with `manifest.json` at the root |
 | `eval.yaml` | evaluation | Models under test, judge models, API base URL |
 | `tests/test_skills.py` | evaluation | One line: `from skill_eval.test_skills import *` |
@@ -69,7 +70,21 @@ It writes `_site/`:
   bundled theme displays them; a hub that wants a trace index supplies
   `website/traces/index.html`.
 
-Two more outputs are off unless `hub.yaml` turns them on:
+Three more outputs are off unless `hub.yaml` turns them on:
+
+- `outputs.suite_bundle` writes one install for every skill in the hub:
+  `bundle/<name>.zip`, a plugin directory (`.claude-plugin/plugin.json` and
+  `skills/<skill>/` for every non-meta skill) that claude.ai and the Claude
+  desktop app accept through Upload plugin; `marketplace.json`, a Claude Code
+  plugin marketplace listing that zip as an `archive` source; and
+  `.well-known/agent-skills/index.json`, the index the `skills` CLI reads from
+  the site URL. `install.html` gains an "Install everything" section. A skill
+  directly under `skills/`, outside any group, is a hub-level skill: it leads the
+  bundle, is also written as `skills/<name>.skill`, and its `{{ suite_skills }}`
+  placeholder becomes a listing of every other skill. Names come from an optional
+  `suite:` block (`name`, `marketplace`, `display_name`, `description`,
+  `version`), defaulting to a slug of the site title. See
+  [docs/adr/2026-10-28-suite-bundle.md](docs/adr/2026-10-28-suite-bundle.md).
 
 - `outputs.gpt_actions` writes `actions/`: `openapi.json`, `openapi.yaml`, and a
   JSON file per group, skill, and skill reference, for a ChatGPT Custom GPT to

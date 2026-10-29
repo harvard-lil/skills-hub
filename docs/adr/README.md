@@ -20,3 +20,4 @@ This index is maintained by hand.
 | [Distribute to consumers from `@main`](2026-08-20-distribute-from-main.md) | Accepted |
 | [Evaluate with an LLM judge and a null baseline](2026-08-20-llm-judge-with-null-baseline.md) | Accepted |
 | [Separate what the agent, the person, and the hub read](2026-10-16-hub-directory-and-user-guide.md) | Accepted |
+| [Publish one bundle of every skill in a hub](2026-10-28-suite-bundle.md) | Proposed |

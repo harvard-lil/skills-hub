@@ -9,6 +9,7 @@ import jinja2
 
 from .config import HubConfig
 from .discover import SkillNode
+from .suite_bundle import SuiteBundle
 
 # Default theme ships with the package
 THEME_DIR = Path(__file__).parent / "theme"
@@ -47,6 +48,7 @@ def render_site(
     repo_url: str = "",
     custom_gpt_url: str = "",
     mcpb_download_url: str = "",
+    suite_bundle: SuiteBundle | None = None,
 ) -> None:
     """Render all HTML templates and copy static assets to _site/.
 
@@ -83,6 +85,7 @@ def render_site(
             "root": root,
             "custom_gpt_url": custom_gpt_url,
             "mcpb_download_url": mcpb_download_url,
+            "suite_bundle": suite_bundle,
         }
         context["nav"] = expand_nav(config.nav, env, context)
 

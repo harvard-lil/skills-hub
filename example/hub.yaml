@@ -16,6 +16,12 @@ outputs:
   skill_packages: true
   gpt_actions: false
   claude_extension: false
+  suite_bundle: true
+
+# A different plugin name from the pubdata-skills hub, whose site title this
+# example shares, so the two bundles never install under one name.
+suite:
+  name: example-data-monitoring
 
 nav:
   - label: Skills

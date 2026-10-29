@@ -63,6 +63,10 @@ runs:
           --repo-url "${{ steps.urls.outputs.repo_url }}" \
           --custom-gpt-url "${{ inputs.custom-gpt-url }}"
 
+    # v3 includes dotfiles in the artifact. v4 drops them, which would remove
+    # `.well-known/agent-skills/` (outputs.suite_bundle) from the site; v5 can
+    # keep them with `include-hidden-files: true`. Check this before accepting
+    # a major-version bump.
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
       with:

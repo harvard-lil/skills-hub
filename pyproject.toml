@@ -8,8 +8,8 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "ruff>=0.5",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
     "skills-hub-builder",
     "skill-eval",
 ]
